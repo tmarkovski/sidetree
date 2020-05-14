@@ -146,9 +146,13 @@
 <h2 id="protocol-versioning"><a class="toc-anchor" href="#protocol-versioning">§</a> Protocol Versioning</h2>
 <p>The rules and parameters of the Sidetree protocol MAY change in the future, resulting in new versions of the specification. The Sidetree specification and reference implementation follow <a href="https://semver.org/">SemVer 2.0</a>.</p>
 <p>Versions of the specification can be found on the Decentralized Identity Foundation’s website at the following version-based paths:</p>
-<pre class="language-html"><code class="language-html">https://identity.foundation/sidetree/docs/v<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>major</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>minor</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>patch</span><span class="token punctuation">></span></span>/
+<p><strong>Latest Draft</strong></p>
+<pre class="language-html"><code class="language-html">https://identity.foundation/sidetree/spec/
 </code></pre>
-<p>Versions of the Sidetree reference implementation are provided as npm modules and <a href="https://github.com/decentralized-identity/sidetree/releases">GitHub releases</a>:</p>
+<p><strong>Specific Versions</strong></p>
+<pre class="language-html"><code class="language-html">https://identity.foundation/sidetree/spec/v<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>major</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>minor</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>patch</span><span class="token punctuation">></span></span>/
+</code></pre>
+<p>Versions of the Sidetree reference implementation are also provided as npm modules and <a href="https://github.com/decentralized-identity/sidetree/releases">GitHub releases</a>:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"@decentralized-identity/sidetree"</span><span class="token punctuation">,</span>
   <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"&lt;major>.&lt;minor>.&lt;patch>"</span><span class="token punctuation">,</span>
@@ -280,7 +284,7 @@
 <img src="../diagrams/file-topology.svg" style="display: block; margin: 0 auto; padding: 2em 0; width: 100%; max-width: 620px;" />
 <h3 id="anchor-file"><a class="toc-anchor" href="#anchor-file">§</a> Anchor File</h3>
 <p>Anchor Files contain <a href="#create">Create</a>, <a href="#recover">Recover</a>, and <a href="#deactivate">Deactivate</a> operation values, as well as a CAS URI for the related Sidetree Map file (detailed below). As the name suggests, Anchor Files are anchored to the target ledger system via embedding a CAS URI in the ledger’s transactional history.</p>
-<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-1" class="notice example"><a class="notice-link" href="#example-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"map_file_uri"</span><span class="token operator">:</span> CAS_URI<span class="token punctuation">,</span>
   <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"create"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -374,7 +378,7 @@
 </ol>
 <h3 id="map-file"><a class="toc-anchor" href="#map-file">§</a> Map File</h3>
 <p>The Map file in the Sidetree protocol contains Update operation proving data, as well as the CAS-linked Chunk file chunks.</p>
-<div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-2" class="notice example"><a class="notice-link" href="#example-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"chunks"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token property">"chunk_file_uri"</span><span class="token operator">:</span> CHUNK_HASH <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -543,7 +547,9 @@
 </ul>
 </li>
 </ol>
-<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>Implementers MAY choose to canonicalize their <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Objects</em></a> prior applying the <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>. This does not affect the outcome or other components in the system that deal with this object.</p>
+<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>Implementations <strong><strong>MAY</strong></strong> choose to define additional properties for inclusion in the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>, but the presence of any properties beyond the standard properties or implementation-defined properties <strong><strong>ARE NOT</strong></strong> permitted.</p>
+</div>
+<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>Implementers <strong><strong>MAY</strong></strong> choose to canonicalize their <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Objects</em></a> prior applying the <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>. This does not affect the outcome or other components in the system that deal with this object.</p>
 </div>
 <h3 id="update"><a class="toc-anchor" href="#update">§</a> Update</h3>
 <p>The following process must be used to update the state a Sidetree-based DID:</p>
@@ -654,7 +660,7 @@
 <h3 id="standard-patch-actions"><a class="toc-anchor" href="#standard-patch-actions">§</a> Standard Patch Actions</h3>
 <p>The following set of standard <em>Patch Actions</em> are specified to help align on a common set of <em>Patch Actions</em> that provide a predictable usage patter across Sidetree-based DID Method implementations.</p>
 <h4 id="add-public-keys"><a class="toc-anchor" href="#add-public-keys">§</a> <code>add-public-keys</code></h4>
-<div id="example-9" class="notice example"><a class="notice-link" href="#example-9">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-3" class="notice example"><a class="notice-link" href="#example-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -721,7 +727,7 @@
 </li>
 </ol>
 <h4 id="remove-public-keys"><a class="toc-anchor" href="#remove-public-keys">§</a> <code>remove-public-keys</code></h4>
-<div id="example-10" class="notice example"><a class="notice-link" href="#example-10">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-4" class="notice example"><a class="notice-link" href="#example-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"key1"</span><span class="token punctuation">,</span> <span class="token string">"key2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -733,7 +739,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>public_keys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of key IDs that correspond with keys presently associated with the DID that are to be removed. If the value is not of the correct type or includes a string value that is not associated with a key in the document, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
 </ol>
 <h4 id="add-service-endpoints"><a class="toc-anchor" href="#add-service-endpoints">§</a> <code>add-service-endpoints</code></h4>
-<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-5" class="notice example"><a class="notice-link" href="#example-5">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -763,7 +769,7 @@
 </li>
 </ol>
 <h4 id="remove-service-endpoints"><a class="toc-anchor" href="#remove-service-endpoints">§</a> <code>remove-service-endpoints</code></h4>
-<div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-6" class="notice example"><a class="notice-link" href="#example-6">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"ids"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"sds1"</span><span class="token punctuation">,</span> <span class="token string">"sds2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -861,33 +867,40 @@
 <h3 id="anchor-file-processing"><a class="toc-anchor" href="#anchor-file-processing">§</a> Anchor File Processing</h3>
 <p>The follow sequence of rules and processing steps must be followed to correctly process an <a href="#anchor-file">Anchor File</a>:</p>
 <ol>
-<li>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST NOT</strong></strong> exceed the <a href="#max-anchor-file-size"><code>MAX_ANCHOR_FILE_SIZE</code></a> - if it does, cease processing, discard the file data, and retain a reference that the file is to be ignored.</li>
-<li>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST</strong></strong> validate against the protocol-defined <a href="#anchor-file">Anchor File</a> schema and construction rules - if it DOES NOT, cease processing, discard the file data, and retain a reference that the file is to be ignored.
+<li>
+<p>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST NOT</strong></strong> exceed the <a href="#max-anchor-file-size"><code>MAX_ANCHOR_FILE_SIZE</code></a> - if it does, cease processing, discard the file data, and retain a reference that the file is to be ignored.</p>
+</li>
+<li>
+<p>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST</strong></strong> validate against the protocol-defined <a href="#anchor-file">Anchor File</a> schema and construction rules - if it DOES NOT, cease processing, discard the file data, and retain a reference that the file is to be ignored.</p>
 <ul>
 <li>While this rule is articulated in the <a href="#anchor-file">Anchor File</a> section of the specification, it should be emphasized to ensure accurate processing: an <a href="#anchor-file">Anchor File</a> <strong><strong>MUST NOT</strong></strong> include multiple operations in the <code>operations</code> section of the <a href="#anchor-file">Anchor File</a> for the same <a href="#did-suffix">DID Suffix</a> - if any duplicates are found, cease processing, discard the file data, and retain a reference that the file is to be ignored.</li>
 </ul>
 </li>
-<li>If processing of rules 1 and 2 above resulted in successful validation of the Anchor File, initiate retrieval of the <a href="#map-file">Map File</a> via the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a> using the <a href="#map-file-property"><code>map_file</code></a> property’s  <em>CID</em> value. This is only a <em><strong>SUGGESTED</strong></em> point at which to begin retrieval of the Map File, not a blocking procedural step, so you may continue with processing before retrieval of the <a href="#map-file">Map File</a> is complete.</li>
-<li>Iterate the <a href="#anchor-file-create-entry"><em>Anchor File Create Entries</em></a>, and for each entry, process as follows:
+<li>
+<p>If processing of rules 1 and 2 above resulted in successful validation of the Anchor File, initiate retrieval of the <a href="#map-file">Map File</a> via the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a> using the <a href="#map-file-property"><code>map_file</code></a> property’s  <em>CID</em> value. This is only a <strong><strong>SUGGESTED</strong></strong> point at which to begin retrieval of the Map File, not a blocking procedural step, so you may continue with processing before retrieval of the <a href="#map-file">Map File</a> is complete.</p>
+</li>
+<li>
+<p>Iterate the <a href="#anchor-file-create-entry"><em>Anchor File Create Entries</em></a>, and for each entry, process as follows:</p>
 <ol>
 <li>Derive the <a href="#did-suffix">DID Suffix</a> from the values present in the entry.</li>
 <li>Ensure the <a href="#did-suffix">DID Suffix</a> of the operation entry has not been included in another valid operation that was previously processed in the scope of this Anchor File. If another previous, valid operation was already processed in the scope of this <a href="#anchor-file">Anchor File</a> for the same DID, do not process the operation and move to the next operation in the array.</li>
-<li>Ensure there IS NOT an existing, valid <a href="#create">Create</a> entry for the same <a href="#did-suffix">DID Suffix</a> at a previous logical time in the implementation node’s observed state-history: If another valid <a href="#anchor-file-create-entry"><em>Anchor File Create Entry</em></a> has already registered a DID matching the same <a href="#did-suffix">DID Suffix</a> in any previously observed transaction preceding the current transaction in <a href="#ledger-time">Ledger Time</a>, do not process the operation and move to the next operation in the array.</li>
-<li>Create an entry for the new DID within the implementation’s persistent storage, relative to the operation’s position in <a href="#ledger-time">Ledger Time</a>, to contain this and future operations of the DID.</li>
+<li>Create an entry for the operation within the <em>Operation Storage</em> area relative to the <a href="#did-suffix">DID Suffix</a>.</li>
 </ol>
 </li>
-<li>Iterate the <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entries</em></a>, and for each entry, process as follows:
+<li>
+<p>Iterate the <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entries</em></a>, and for each entry, process as follows:</p>
 <ol>
 <li>Ensure the <a href="#did-suffix">DID Suffix</a> of the operation entry has not been included in another valid operation that was previously processed in the scope of this Anchor File. If another previous, valid operation was already processed in the scope of this <a href="#anchor-file">Anchor File</a> for the same DID, do not process the operation and move to the next operation in the array.</li>
-<li>Ensure there IS NOT an existing, valid <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entry</em></a> for the same <a href="#did-suffix">DID Suffix</a>, with the same recovery reveal value, at a previous logical time in the implementation node’s observed state-history: If another valid <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entry</em></a> has already recovered a DID matching the same <a href="#did-suffix">DID Suffix</a>, using the same recovery commitment in any previously observed transaction preceding the current transaction in <a href="#ledger-time">Ledger Time</a>, do not process the operation and move to the next operation in the array.</li>
-<li>Create an entry for the operation in the implementation’s persistent storage, relative to the operation’s position in <a href="#ledger-time">Ledger Time</a>, and that of any previously observed operations for the same <a href="#did-suffix">DID Suffix</a>, if any are present.</li>
+<li>Create an entry for the operation within the <em>Operation Storage</em> area relative to the <a href="#did-suffix">DID Suffix</a>.</li>
 </ol>
 </li>
-<li>Iterate the <a href="#anchor-file">Anchor File</a> Deactivate Entries_](#anchor-file-deactivate-entry), and for each entry, process as follows:
+<li>
+<p>Iterate the <a href="#anchor-file">Anchor File</a> <a href="#anchor-file-deactivate-entry"><em>Deactivate Entries</em></a>, and for each entry, process as follows:</p>
 <ol>
 <li>Ensure the <a href="#did-suffix">DID Suffix</a> of the operation entry has not been included in another valid operation that was previously processed in the scope of this Anchor File. If another previous, valid operation was already processed in the scope of this <a href="#anchor-file">Anchor File</a> for the same DID, do not process the operation and move to the next operation in the array.</li>
-<li>Concatenate the <a href="#did-suffix">DID Suffix</a> and the <em>Recovery Reveal Value</em> together and validate the signature present in the entry against the concatenated string value. If the signature is valid, update retained references to the DID to deactivate it. If the signature is invalid, do not process the operation and move to the next operation in the array.</li>
+<li>Create an entry for the operation within the <em>Operation Storage</em> area relative to the <a href="#did-suffix">DID Suffix</a>.</li>
 </ol>
+ <!-- 2. Concatenate the [DID Suffix](#did-suffix) and the _Recovery Reveal Value_ together and validate the signature present in the entry against the concatenated string value. If the signature is valid, update retained references to the DID to deactivate it. If the signature is invalid, do not process the operation and move to the next operation in the array. -->
 </li>
 </ol>
 <div id="todo-1" class="notice todo"><a class="notice-link" href="#todo-1">TODO</a><p>Confirm how we handle ops where there was not a previous op found.</p>
@@ -897,12 +910,12 @@
 <ol>
 <li>The <a href="#map-file">Map File</a> <strong><strong>MUST NOT</strong></strong> exceed the <a href="#max-map-file-size"><code>MAX_MAP_FILE_SIZE</code></a> - if it does, cease processing, discard the file data, and retain a reference that the file is to be ignored.</li>
 <li>The <a href="#map-file">Map File</a> <strong><strong>MUST</strong></strong> validate against the protocol-defined <a href="#map-file">Map File</a> schema and construction rules - if it DOES NOT, cease processing, discard the file data, and retain a reference that the file is to be ignored.</li>
-<li>If processing of rules 1 and 2 above resulted in successful validation of the Map File, begin retrieval of the Chunk Files by iterating the <code>chunks</code> array and using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a> to fetch each entry’s <code>chunk_file_uri</code> (a <em>CID</em> based on the <a href="#cid-algorithm"><code>CID_ALGORITHM</code></a>. This is only a <em><strong>SUGGESTED</strong></em> point at which to begin retrieval of the Map File, not a blocking procedural step, so you may continue with processing before retrieval of the Chunk File chunks is complete.</li>
+<li>If processing of rules 1 and 2 above resulted in successful validation of the Map File, begin retrieval of the Chunk Files by iterating the <code>chunks</code> array and using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a> to fetch each entry’s <code>chunk_file_uri</code> (a <em>CID</em> based on the <a href="#cid-algorithm"><code>CID_ALGORITHM</code></a>. This is only a <strong><strong>SUGGESTED</strong></strong> point at which to begin retrieval of the Map File, not a blocking procedural step, so you may continue with processing before retrieval of the Chunk File chunks is complete.</li>
 <li>Iterate the <a href="#map-file-update-entry"><em>Map File Update Entries</em></a>, and for each entry, process as follows:
 <ol>
 <li>Ensure the <a href="#did-suffix">DID Suffix</a> of the operation entry has not been included in another valid operation that was previously processed in the scope of the <a href="#map-file">Map File</a> or its parent <a href="#anchor-file">Anchor File</a>. If another previous, valid operation was already processed in the scope of this <a href="#anchor-file">Anchor File</a> for the same DID, do not process the operation and move to the next operation in the array.</li>
 <li>Ensure there IS NOT an existing, valid <a href="#map-file-update-entry">Map File Update Entry</a> for the same <a href="#did-suffix">DID Suffix</a>, with the same update reveal value, at a previous logical time in the implementation node’s observed state-history: If another valid <a href="#map-file-update-entry">Map File Update Entry</a> has already update a DID matching the same <a href="#did-suffix">DID Suffix</a>, using the same update commitment in any previously observed transaction preceding the current transaction in <a href="#ledger-time">Ledger Time</a>, do not process the operation and move to the next operation in the array.</li>
-<li>Create an entry for the operation in the implementation’s persistent storage, relative to the operation’s position in <a href="#ledger-time">Ledger Time</a>, and that of any previously observed operations for the same <a href="#did-suffix">DID Suffix</a>, if any are present.</li>
+<li>Create an entry for the operation within the <em>Operation Storage</em> area relative to the <a href="#did-suffix">DID Suffix</a>.</li>
 </ol>
 </li>
 <li>If the node is in a <a href="#light-node"><em>Light Node</em></a> configuration, retain a reference to the <a href="#chunk-files">Chunk Files</a> relative to the DIDs in the anchored batch for just-in-time fetch of the <a href="#chunk-files">Chunk Files</a> during DID resolution.</li>
@@ -918,11 +931,11 @@
 <li>With the <a href="#operation-delta-mapping-array">Operation Delta Mapping Array</a> assembled, iterate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entries</em></a> from 0 index forward, processing each <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> as follows:
 <ol>
 <li>Identify the operation entry from the <a href="#operation-delta-mapping-array">Operation Delta Mapping Array</a> at the same index as the current iteration and determine its <a href="#did-suffix">DID Suffix</a> (for <a href="#anchor-file-create-entry"><em>Anchor File Create Entries</em></a>, you will need to compute the <a href="#did-suffix">DID Suffix</a>). This is the DID the current iteration element maps to.</li>
-<li>Insert the current <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> into the persistent operation storage area designated for the matching DID in ledger-relative chronological order, in relation to any existing operations.</li>
+<li>Store the current <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> relative to its operation entry in the persistent storage area designated for the related <a href="#did-suffix">DID Suffix</a>.</li>
 </ol>
 </li>
 </ol>
-<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>The assembly and processing of Chunk Files will change in a future update to the protocol, to accommodate the introduction of multiple chunk files. The current protocol version is designed around one Chunk File, but the scaffolding is present to move to multiple Chunk Files as development progresses.</p>
+<div id="note-4" class="notice note"><a class="notice-link" href="#note-4">NOTE</a><p>The assembly and processing of Chunk Files will change in a future update to the protocol, to accommodate the introduction of multiple chunk files. The current protocol version is designed around one Chunk File, but the scaffolding is present to move to multiple Chunk Files as development progresses.</p>
 </div>
 <div id="todo-2" class="notice todo"><a class="notice-link" href="#todo-2">TODO</a><p>Add the ordering rules for ensuring the order matches the order expected from the Anchor/Map files</p>
 </div>
@@ -960,22 +973,31 @@
 </ol>
 </li>
 <li>
-<p>Ensure all operations for the DID are sorted in ascending <a href="#ledger-time"><code>Ledger Time</code></a> order.</p>
+<p><a href="#operation-hash-map-construction" id="operation-hash-map-construction">Assembly of the <em>Operation Hash Map</em></a>: if no entries are present in the DID’s <em>Operation Storage</em> area without the <em>Mapped</em> flag, proceed to the next step, if entries do exist in the DID’s <em>Operation Storage</em> begin iterating them forward from 0-index as follows:</p>
+<ol>
+<li>If the entry is a Create-type operation, create a persistent <a href="#create-operation-pool" id="create-operation-pool"><em>Create Operation Pool</em></a> reference for it, and all other Create-type operations found during this iteration.</li>
+<li>Hash the <em>Reveal Value</em> of the operation.</li>
+<li>Ensure a key exists in the <em>Operation Hash Map</em> corresponding to the hash, and that the corresponding value is an array. If no property exists for the hash, create it and let its value be an array.</li>
+<li>Insert the entry into the array of the matching hash at its proper position in ascending <a href="#ledger-time"><code>Ledger Time</code></a> order.</li>
+<li>Mark the entry in the <em>Operation Storage</em> area with the <em>Mapped</em> flag.</li>
+</ol>
 </li>
 <li>
-<p><a href="#create-operation-processing" id="create-operation-processing">Create operation processing</a>: begin iterating the operations from earliest in <a href="#ledger-time"><code>Ledger Time</code></a> forward, until a Create operation is found. If no Create operation is found, cease resolution of the DID and declare the DID unresolvable. If a Create operation is found, process the Create operation as follows:</p>
+<p><a href="#create-operation-processing" id="create-operation-processing">Create operation processing</a>: If no operations are present in the <a href="#create-operation-pool"><em>Create Operation Pool</em></a>, cease resolution of the DID and declare the DID <em>Unresolvable</em>. If the <a href="#create-operation-pool"><em>Create Operation Pool</em></a> contains operation entries, process them as follows:</p>
 <ol>
+<li>If a <em>Next Recovery Commitment</em> value has not already been stored in relation to the DID, store the value of the <code>recovery_commitment</code> property from the entry’s <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> as the <em>Next Recovery Commitment</em> for use in processing the next Recovery operation.</li>
+<li>If a <em>Next Recovery Key</em> value has not already been stored in relation to the DID, store the value of the <code>recovery_key</code> property from the entry’s <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> as the <em>Next Recovery Key</em> for use in processing the next Recovery operation.</li>
 <li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
 <ol>
 <li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> using the associated <em>Chunk File URI</em>. If the file is unable to be retrieved:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
 <li>Skip all further Create operation processing steps and proceed to <a href="#post-create-operation-processing">post-Create operation processing</a>.</li>
 </ol>
 </li>
 <li>Validate the <a href="#chunk-file">Chunk File</a> using the <a href="#chunk-file-processing">Chunk File Processing</a> procedure. If the <a href="#chunk-file">Chunk File</a> is valid, proceed, if the file is invalid:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
 <li>Skip all further Create operation processing steps and proceed to <a href="#post-create-operation-processing">post-Create operation processing</a>.</li>
 </ol>
 </li>
@@ -984,11 +1006,11 @@
 <li>Validate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>. If the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> is valid, proceed, if the Entry is invalid, let the state of the DID reflect an <em>Empty DID State</em>.</li>
 <li>Generate a hash of the decoded <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> via the <a href="#hashing-process">Hashing Process</a> and ensure the hash equals the value of the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> <code>delta_hash</code> property. If the values are exactly equal, proceed, if they are not:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
 <li>Skip all further Create operation processing steps and proceed to <a href="#post-create-operation-processing">post-Create operation processing</a>.</li>
 </ol>
 </li>
-<li>Retain a reference to the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> for use in processing the next Update operation.</li>
+<li>Store the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> as the <em>Next Update Commitment</em> for use in processing the next Update operation.</li>
 <li>Begin iterating the <code>patches</code> array in the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>, and for each <a href="#did-state-patch">DID State Patch</a> entry, perform the following steps:
 <ol>
 <li>Validate the entry in accordance any requirements imposed by the <a href="#standard-patch-actions">Patch Action</a> type indicated by the <code>action</code> value of the entry. If the entry is valid, proceed, if the entry fails validation, skip the entry and proceed to the next entry.</li>
@@ -998,105 +1020,114 @@
 </ol>
 </li>
 <li>
-<p><a href="#post-create-operation-processing">Post-Create operation processing</a> Once a Create operation has been successfully processed, proceed iterating forward in the DID’s observed operation set using the following processing rules depending on the operation type for each operation entry:</p>
+<p><a href="#recovery-deactivate-operation-processing" id="recovery-operation-processing">Recovery and deactivate operation processing</a>: when Create operations have been successfully processed, process any Recovery operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
+<ol>
+<li>If a property is present in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, process its array of operation entries using the following steps. If no property exists in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, exit <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> and advance to <a href="#update-operation-processing">update operation processing</a>.</li>
+<li>Iterate the array of operation entries forward from 0-index using the process enumerated below until a valid entry is found and processed:
 <ul>
 <li>
-<p>If the entry is another Create operation, skip the entry and proceed to the next operation.</p>
-</li>
-<li>
-<p>If the entry is an Update operation, process as follows:</p>
+<p>If the entry is a Recovery operation:</p>
 <ol>
-<li>If the DID is flagged as <em>Non-Updateable</em>, skip the entry and proceed to the next operation.</li>
-<li>Generate a hash of the entry’s <code>update_reveal_value</code> using the <a href="#hashing-process">Hashing Process</a> and compare the output to the currently retained <em>Update Commitment</em>. If the values are exactly equal, proceed, if they are not, skip the entry and proceed to the next operation.</li>
-<li>Using the <code>kid</code> from the operation’s <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a>, locate the key currently associated with the DID that matches the <code>kid</code> value, and ensure it is designated as a key allowed to perform operations (e.g. has an<a href="#add-public-keys"><code>add-public-keys</code></a> Patch Action <code>usage</code> designation of <code>ops</code>). If no currently associated key matches the <code>kid</code> value, or the key is not designated as a key allowed to perform operations, skip the entry and proceed to the next operation.</li>
-<li>Using the specified key, validate the <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and proceed to the next operation.</li>
-<li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
+<li>Using the key currently assigned as the <em>Next Recovery Key</em>, validate the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next operation. If there are no further operation entries, and the <em>Next Update Commitment</em> value is not set to <code>null</code>, proceed to <a href="#update-operation-processing">update operation processing</a>.</li>
+<li>Store the <code>recovery_commitment</code> value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> as the new value for the <em>Next Recovery Commitment</em>, for use in processing the next Recovery operation.</li>
+<li>If the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> includes a <code>recovery_key</code> property with a value that is an <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation of a public key, assign the key as the new value for the <em>Next Recovery Key</em> and retain it for use in processing the next Recovery operation.</li>
+<li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (e.g. node is a <a href="#light-node"><em>Light Node</em></a> implementation), perform the following steps:
 <ol>
-<li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> using the associated <em>Chunk File URI</em>. If the file is unable to be retrieved:
+<li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> data using the associated <em>Chunk File URI</em>. If the file data is able to be retrieved, proceed, if the file cannot be found:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
 </ol>
 </li>
 <li>Validate the <a href="#chunk-file">Chunk File</a> using the <a href="#chunk-file-processing">Chunk File Processing</a> procedure. If the <a href="#chunk-file">Chunk File</a> is valid, proceed, if the file is invalid:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
 </ol>
 </li>
 </ol>
 </li>
-<li>Validate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>. If the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> is valid, proceed, if the Entry is invalid, let the state of the DID reflect an <em>Empty DID State</em>.</li>
-<li>Generate a hash of the decoded <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> via the <a href="#hashing-process">Hashing Process</a> and ensure the hash equals the value of the <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a> <code>delta_hash</code> property. If the values are exactly equal, proceed, if they are not:
+<li>Validate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>. If the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> is valid, proceed, if the entry is invalid:
 <ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
+<li>Let the state of the DID reflect an <em>Empty DID State</em>.</li>
+<li>Use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
 </ol>
 </li>
-<li>Retain a reference to the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> for use in processing the next Update operation.</li>
+<li>Generate a hash of the decoded <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> via the <a href="#hashing-process">Hashing Process</a> and ensure the hash equals the value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> <code>delta_hash</code> property. If the values are exactly equal, proceed, if the values are not exactly equal:
+<ol>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
+</ol>
+</li>
+<li>Assign the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> as the new value for the <em>Next Update Commitment</em>, for use in processing the next Update operation.</li>
 <li>Begin iterating the <code>patches</code> array in the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>, and for each <a href="#did-state-patch">DID State Patch</a> entry, perform the following steps:
 <ol>
-<li>Validate the entry in accordance any requirements imposed by the <a href="#standard-patch-actions">Patch Action</a> type indicated by the <code>action</code> value of the entry. If the entry is valid, proceed, if the entry fails validation, skip the entry and proceed to the next entry.</li>
-<li>Apply the patch as directed by the <a href="#standard-patch-actions">Patch Action</a> type specified by the <code>action</code> property. If any part of the patch fails or produces an error, reverse all modifications to the DID’s state and proceed to the next entry.</li>
+<li>Validate the entry in accordance any requirements imposed by the <a href="#standard-patch-actions">Patch Action</a> type indicated by the <code>action</code> value of the entry. If the entry is valid, proceed, if the entry fails validation, use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
+<li>Apply the patch as directed by the <a href="#standard-patch-actions">Patch Action</a> type specified by the <code>action</code> property. If any part of the patch fails or produces an error, reverse all modifications to the DID’s state and use the new <em>Next Recovery Commitment</em> in another run of the <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> loop.</li>
 </ol>
 </li>
 </ol>
 </li>
 <li>
-<p>If the entry is a Recovery operation, process as follows:</p>
+<p>If the entry is a Deactivate operation:</p>
 <ol>
-<li>Generate a hash of the entry’s <code>recovery_reveal_value</code> using the <a href="#hashing-process">Hashing Process</a> and compare the output to the currently retained <em>Recovery Commitment</em>. If the values are exactly equal, proceed, if they are not, skip the entry and proceed to the next operation.</li>
-<li>Using the current recovery key, validate the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and proceed to the next operation.</li>
-<li>If the DID is flagged as <em>Non-Updateable</em>, remove the flag.</li>
-<li>Retain a reference to the <code>recovery_commitment</code> value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> for use in processing the next Recovery operation.</li>
-<li>If the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> includes a <code>recovery_key</code> property with a value that is an <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation of a public key, discard the current recovery key and retain the new key for use in processing the next Recovery operation.</li>
-<li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
-<ol>
-<li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> using the associated <em>Chunk File URI</em>. If the file is unable to be retrieved:
-<ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
-</ol>
-</li>
-<li>Validate the <a href="#chunk-file">Chunk File</a> using the <a href="#chunk-file-processing">Chunk File Processing</a> procedure. If the <a href="#chunk-file">Chunk File</a> is valid, proceed, if the file is invalid:
-<ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>Validate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>. If the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> is valid, proceed, if the Entry is invalid, let the state of the DID reflect an <em>Empty DID State</em>.</li>
-<li>Generate a hash of the decoded <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> via the <a href="#hashing-process">Hashing Process</a> and ensure the hash equals the value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> <code>delta_hash</code> property. If the values are exactly equal, proceed, if they are not:
-<ol>
-<li>Internally flag the state of the DID as <em>Non-Updateable</em>.</li>
-<li>Skip all further processing of the operation and proceed to the next entry.</li>
-</ol>
-</li>
-<li>Retain a reference to the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> for use in processing the next Update operation.</li>
-<li>Begin iterating the <code>patches</code> array in the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>, and for each <a href="#did-state-patch">DID State Patch</a> entry, perform the following steps:
-<ol>
-<li>Validate the entry in accordance any requirements imposed by the <a href="#standard-patch-actions">Patch Action</a> type indicated by the <code>action</code> value of the entry. If the entry is valid, proceed, if the entry fails validation, skip the entry and proceed to the next entry.</li>
-<li>Apply the patch as directed by the <a href="#standard-patch-actions">Patch Action</a> type specified by the <code>action</code> property. If any part of the patch fails or produces an error, reverse all modifications to the DID’s state and proceed to the next entry.</li>
-</ol>
-</li>
-</ol>
-</li>
-<li>
-<p>If the entry is a Deactivation operation, process as follows:</p>
-<ol>
-<li>Generate a hash of the entry’s <code>recovery_reveal_value</code> using the <a href="#hashing-process">Hashing Process</a> and compare the output to the currently retained <em>Recovery Commitment</em>. If the values are exactly equal, proceed, if they are not, skip the entry and proceed to the next operation.</li>
-<li>Using the current recovery key, validate the <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and proceed to the next operation.</li>
-<li>If the DID is flagged as <em>Non-Updateable</em>, remove the flag.</li>
-<li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>did_suffix</code> property with a value that exactly equal to the <a href="#did-suffix">DID Suffix</a> of the DID being operated on.</li>
-<li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>recovery_reveal_value</code> property, and the hash of the value (generated using the <a href="#hashing-process">Hashing Process</a>) <strong><strong>must</strong></strong> be exactly equal to the currently retained <em>Recovery Commitment</em>. If the values are exactly equal, proceed, if they are not, skip the entry and proceed to the next operation.</li>
-<li>Mark the DID as <em>Deactivated</em>, process no further entries.</li>
+<li>Using the key currently assigned as the <em>Next Recovery Key</em>, validate the <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and proceed to the next operation. If there are no further operation entries, and the <em>Next Update Commitment</em> value is not set to <code>null</code>, proceed to <a href="#update-operation-processing">update operation processing</a>.</li>
+<li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>did_suffix</code> property with a value that exactly equal to the <a href="#did-suffix">DID Suffix</a> of the DID being operated on, if the value is not exactly equal, skip the entry and proceed to the next operation.</li>
+<li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>recovery_reveal_value</code> property, and the hash of the value (generated using the <a href="#hashing-process">Hashing Process</a>) <strong><strong>must</strong></strong> be exactly equal to the currently value of the <em>Next Recovery Commitment</em>. If the values are exactly equal, proceed, if they are not exactly equal, skip the entry and proceed to the next operation in the array.</li>
+<li>Mark the DID as <em>Deactivated</em>, and process no further operation entries for this DID.</li>
 </ol>
 </li>
 </ul>
 </li>
+</ol>
+</li>
 <li>
-<p>After the DID’s operations have been evaluated in the compilation steps above, the implementation <strong><strong>MUST</strong></strong> use the DID’s compiled state to generate a valid DID Document in accordance with the <a href="https://w3c.github.io/did-core/">W3C Decentralized Identifiers</a> specification.</p>
+<p><a href="#update-operation-processing">Update operation processing</a>: if the <em>Next Update Commitment</em> value <strong><strong>IS NOT</strong></strong> set to <code>null</code>, and no Deactivate operations were successfully processed during <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a>, process any Update operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
+<ol>
+<li>
+<p>If a property is present in the <em>Operation Hash Map</em> that matches the <em>Next Update Commitment</em> exactly, process its array of operation entries using the following steps. If no property exists in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</p>
+</li>
+<li>
+<p>Iterate the array of operation entries forward from 0-index using the process enumerated below until a valid entry is found and processed:</p>
+<ol>
+<li>Using the <code>kid</code> from the operation’s <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a>, locate the key currently associated with the DID that matches the <code>kid</code> value, and ensure it is designated as a key allowed to perform operations (e.g. has an<a href="#add-public-keys"><code>add-public-keys</code></a> Patch Action <code>usage</code> designation of <code>ops</code>). If no currently associated key matches the <code>kid</code> value, or the key is not designated as a key allowed to perform operations, skip the entry, and iterate forward to the next operation.</li>
+<li>Using the specified key, validate the <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next operation.</li>
+<li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
+<ol>
+<li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> using the associated <em>Chunk File URI</em>. If the file is unable to be retrieved:
+<ol>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</li>
+</ol>
+</li>
+<li>Validate the <a href="#chunk-file">Chunk File</a> using the <a href="#chunk-file-processing">Chunk File Processing</a> procedure. If the <a href="#chunk-file">Chunk File</a> is valid, proceed, if the file is invalid:
+<ol>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Validate the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>. If the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> is valid, proceed, if the entry is invalid, let the state of the DID reflect an <em>Empty DID State</em>.</li>
+<li>Generate a hash of the decoded <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> via the <a href="#hashing-process">Hashing Process</a> and ensure the hash equals the value of the <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a> <code>delta_hash</code> property. If the values are exactly equal, proceed, if they are not:
+<ol>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>.</li>
+<li>Exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</li>
+</ol>
+</li>
+<li>Store the <code>update_commitment</code> value of the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> as the <em>Next Update Commitment</em> for use in processing the next Update operation.</li>
+<li>Begin iterating the <code>patches</code> array in the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a>, and for each <a href="#did-state-patch">DID State Patch</a> entry, perform the following steps:
+<ol>
+<li>Validate the entry in accordance any requirements imposed by the <a href="#standard-patch-actions">Patch Action</a> type indicated by the <code>action</code> value of the entry. If the entry is valid, proceed, if the entry fails validation, exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</li>
+<li>Apply the patch as directed by the <a href="#standard-patch-actions">Patch Action</a> type specified by the <code>action</code> property. If any part of the patch fails or produces an error, reverse all modifications to the DID’s state and exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>
+<p><a href="#compiled-state-processing" id="compiled-state-processing">Compiled state processing</a>: After the DID’s operations have been evaluated in the compilation steps above, the implementation <strong><strong>MUST</strong></strong> use the DID’s compiled state to generate a valid DID Document in accordance with the <a href="https://w3c.github.io/did-core/">W3C Decentralized Identifiers</a> specification.</p>
 </li>
 <li>
 <p>Once a valid DID Document state has been generated, proceed to the <a href="#did-resolver-output">DID Resolver Output</a> process, if you intend to output the resolved DID Document in accordance with the <a href="#https://w3c-ccg.github.io/did-resolution/">Decentralized Identifier Resolution</a> specification.</p>
