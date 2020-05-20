@@ -487,24 +487,32 @@
   <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"EdDSA"</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>It is recommended that <code>kid</code> be a DID URL. If it is not, method implementers might need to rely on additional context to uniquely identify the associated verificationMethod.</p>
+</div>
 <h3 id="verifying"><a class="toc-anchor" href="#verifying">§</a> Verifying</h3>
-<p>If <code>kid</code> is a DID URL, the verification key MAY be resolved as follows:</p>
+<p>Regardless of which proof purpose a verificationMethod is associated with, the process of verifying a JWS linked to a DID is the same.</p>
+<p>The JWS header is parsed and a <code>kid</code> is extracted.</p>
 <ol>
-<li>Resolve the <code>kid</code> value using a resolver.</li>
-<li>iterate the <code>operations</code> and <code>recovery</code> verificationMethods, until a verificationMethod with <code>id</code> equal to <code>kid</code> is found.</li>
-<li>A <a href="https://identity.foundation/sidetree/spec/#recover">Recover Operation</a> is only valid when signed by a key listed in <code>recovery</code>. Other operations are only valid when signed with keys listed in <code>operations</code>. If the key is not present in the expected collection, verification fails, and the operation is considered invalid. If the key is present in the expected collection proceed.</li>
+<li>Iterate the verificationMethods, until a verificationMethod with <code>id</code> equal to <code>kid</code> is found.</li>
 <li>Convert the discovered verificationMethod to JWK if necessary.</li>
 <li>Perform <a href="https://tools.ietf.org/html/rfc7515#section-5.2">JWS Verification</a> using the JWK.</li>
-<li>The operation is considered valid if key material was present in the correct collection and the signature is valid.</li>
 </ol>
-<p>If <code>kid</code> is not a DID URL, the verification key MAY be resolved as follows:</p>
-<ol>
-<li>Iterate an internal representation of keys registered for use with the DID until a jwk with <code>kid</code> equal to <code>kid</code> is found.</li>
-<li>Ensure that the <code>usage</code> property of the internal key represenation is <code>recovery</code> if the operation is a recovery operation or <code>ops</code> if the operation is not Recovery or Update.</li>
-<li>Perform <a href="https://tools.ietf.org/html/rfc7515#section-5.2">JWS Verification</a> using the JWK.</li>
-<li>The operation is considered valid if key material was present with the correct usage and the signature is valid.</li>
-</ol>
-<div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>Operations may be valid, and yet still rejected in the resolution process.</p>
+<h4 id="operation-verification"><a class="toc-anchor" href="#operation-verification">§</a> Operation Verification</h4>
+<p>Sidetree operations are considered valid when the JWS can be verified, and where the verificationMethod used is associated with the correct proof purpose.</p>
+<p><code>operation</code>, <code>recovery</code> are proof purposes for verifying sidetree operations which sidetree DID Methods MUST support, and which MAY be exposed externally via the DID Document or Resolver Method Meta Data.</p>
+<p>An <a href="https://identity.foundation/sidetree/spec/#update">Update Operation</a> MUST be signed by a key associated with the <code>operation</code> proof purpose.</p>
+<p>A <a href="https://identity.foundation/sidetree/spec/#recover">Recover Operation</a> MUST by signed by a key associated with the <code>recovery</code> proof purpose.</p>
+<p>A <a href="https://identity.foundation/sidetree/spec/#deactivate">Deactivate Operation</a> MUST by signed by a key associated with the <code>recovery</code> proof purpose.</p>
+<p>If a verificationMethod with <code>id</code> matching the JWS <code>kid</code> is not present in the expected collection, the sidetree operation is considered not valid.</p>
+<div id="warning-2" class="notice warning"><a class="notice-link" href="#warning-2">WARNING</a><p>Operations may be verified, and yet still rejected in the resolution process.</p>
+</div>
+<p>DID Core also defines proof purposes which sidetree DID Methods MAY support.</p>
+<p><code>assertionMethod</code> for use with Verifiable Credentials.
+<code>authentication</code> for use with Verifiable Presentations, and general authentication flows.
+<code>capabilityInvocation</code> and <code>capabilityDelegation</code> for use with Object Capabilities used by Secure Data Stores / Encrypted Data vaults.</p>
+<div id="warning-3" class="notice warning"><a class="notice-link" href="#warning-3">WARNING</a><p>verificationMethod objects can be embedded, or referenced by <code>id</code>.</p>
+</div>
+<div id="warning-4" class="notice warning"><a class="notice-link" href="#warning-4">WARNING</a><p>It is not recommended to reuse verificationMethods for multiple proof purposes.</p>
 </div>
 <h2 id="did-operations"><a class="toc-anchor" href="#did-operations">§</a> DID Operations</h2>
 <p>Sidetree-based DIDs support a variety of DID operations, all of which require the DID owner to generate specific data values and cryptographic material. The sections below describe how to perform each type of operation, and how those operations are represented in the CAS-replicated files that are anchored to the underlying ledger system.</p>
@@ -513,7 +521,7 @@
 </div>
 <p>Sidetree Methods MAY choose to expose protocol operation keys in the DID Document.</p>
 <p>Sidetree Methods MAY rely on the DID Document data model when verifying protocol operations.</p>
-<div id="warning-2" class="notice warning"><a class="notice-link" href="#warning-2">WARNING</a><p>Operations other than Create contain a compact JWS. Dereferencing of key material used to verify the JWS is a DID Method specific concern. Some methods may rely of the DID Document data model, others may rely on an internal data model. Some methods may rely on <code>kid</code> of the form <code>did:example:123#fingerprint</code>, others may not include a <code>kid</code> in the JWS, or its value may be arbitrary. Support for specific <code>alg</code> fields is also DID Method specific. Implementers are cautioned to choose support for specific <code>alg</code> values carefully.</p>
+<div id="warning-5" class="notice warning"><a class="notice-link" href="#warning-5">WARNING</a><p>Operations other than Create contain a compact JWS. Dereferencing of key material used to verify the JWS is a DID Method specific concern. Some methods may rely of the DID Document data model, others may rely on an internal data model. Some methods may rely on <code>kid</code> of the form <code>did:example:123#fingerprint</code>, others may not include a <code>kid</code> in the JWS, or its value may be arbitrary. Support for specific <code>alg</code> fields is also DID Method specific. Implementers are cautioned to choose support for specific <code>alg</code> values carefully.</p>
 </div>
 <h3 id="create"><a class="toc-anchor" href="#create">§</a> Create</h3>
 <p>Use the following process to generate a Sidetree-based DID:</p>
@@ -789,6 +797,8 @@
 <li>The object <strong><strong>MUST</strong></strong> include an <code>action</code> property, and its value <strong><strong>MUST</strong></strong> be <code>ietf-json-patch</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> include a <code>patches</code> property, and its value <strong><strong>MUST</strong></strong> be an array of <a href="https://tools.ietf.org/html/rfc6902">IETF JSON Patch</a> operation objects.</li>
 </ol>
+<p>If <code>ietf-json-patch</code> is used to add or remove from a proof purpose collection, such as <code>operations</code>, <code>recovery</code> or <code>assertionMethod</code>, per the DID Core spec, each collection element MUST have a unique <code>id</code> property, or be a unique string identifier.</p>
+<p>See <a href="https://identity.foundation/sidetree/spec/#operation-verification">Operation Verification</a> for more details on how operations are verified.</p>
 <div id="1" class="notice example"><a class="notice-link" href="#1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"ietf-json-patch"</span><span class="token punctuation">,</span>
   <span class="token property">"patches"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -819,9 +829,9 @@
 <span class="token punctuation">}</span>
 </code></pre>
 </div>
-<div id="warning-3" class="notice warning"><a class="notice-link" href="#warning-3">WARNING</a><p>Without careful validation, use of <code>ietf-json-patch</code> may result in unrecoverable states, similar to “Deactivated”.</p>
+<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>Without careful validation, use of <code>ietf-json-patch</code> may result in unrecoverable states, similar to “Deactivated”.</p>
 </div>
-<div id="warning-4" class="notice warning"><a class="notice-link" href="#warning-4">WARNING</a><p>Use of <code>ietf-json-patch</code> may harm an implmentation’s ability to perform validation on operations at ingestion time, which could impact performance negatively.</p>
+<div id="warning-7" class="notice warning"><a class="notice-link" href="#warning-7">WARNING</a><p>Use of <code>ietf-json-patch</code> may harm an implmentation’s ability to perform validation on operations at ingestion time, which could impact performance negatively.</p>
 </div>
 <h2 id="transaction-operation-processing"><a class="toc-anchor" href="#transaction-operation-processing">§</a> Transaction &amp; Operation Processing</h2>
 <h3 id="transaction-anchoring"><a class="toc-anchor" href="#transaction-anchoring">§</a> Transaction Anchoring</h3>
@@ -1302,7 +1312,11 @@ did:elem:EiD0x0JeWXQbVIpBpyeyF5FDdZN1U7enAfHnd13Qk_CYpQ
 <li><a href="#json-web-signatures">JSON Web Signatures</a>
 <ul>
 <li><a href="#signing">Signing</a></li>
-<li><a href="#verifying">Verifying</a></li>
+<li><a href="#verifying">Verifying</a>
+<ul>
+<li><a href="#operation-verification">Operation Verification</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#did-operations">DID Operations</a>
