@@ -294,7 +294,6 @@
       <span class="token punctuation">{</span>
         <span class="token property">"suffix_data"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Base64URL encoded</span>
           <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH<span class="token punctuation">,</span>
-          <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT<span class="token punctuation">,</span>
           <span class="token property">"recovery_commitment"</span><span class="token operator">:</span> COMMITMENT_HASH
         <span class="token punctuation">}</span>
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -304,14 +303,13 @@
       <span class="token punctuation">{</span>
         <span class="token property">"did_suffix"</span><span class="token operator">:</span> SUFFIX_STRING<span class="token punctuation">,</span>
         <span class="token property">"signed_data"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Base64URL encoded, compact JWS</span>
-            <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE<span class="token punctuation">,</span>
-                <span class="token property">"recovery_commitment"</span><span class="token operator">:</span> COMMITMENT_HASH<span class="token punctuation">,</span>
-                <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH<span class="token punctuation">,</span>
-                <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT
-            <span class="token punctuation">}</span><span class="token punctuation">,</span>
-            <span class="token property">"signature"</span><span class="token operator">:</span> SIGNATURE_STRING
+          <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token property">"recovery_commitment"</span><span class="token operator">:</span> COMMITMENT_HASH<span class="token punctuation">,</span>
+            <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT<span class="token punctuation">,</span>
+            <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH
+          <span class="token punctuation">}</span><span class="token punctuation">,</span>
+          <span class="token property">"signature"</span><span class="token operator">:</span> SIGNATURE_STRING
         <span class="token punctuation">}</span>
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
       <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -323,7 +321,7 @@
             <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
             <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
               <span class="token property">"did_suffix"</span><span class="token operator">:</span> SUFFIX_STRING<span class="token punctuation">,</span>
-              <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE
+              <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT
             <span class="token punctuation">}</span><span class="token punctuation">,</span>
             <span class="token property">"signature"</span><span class="token operator">:</span> SIGNATURE_STRING
         <span class="token punctuation">}</span>
@@ -344,7 +342,7 @@
 <li>The <code>operations</code> object <strong><strong>MUST</strong></strong> include a <code>create</code> property, and its value <strong><strong>MUST</strong></strong> be an array.</li>
 <li>For each <a href="#create">Create</a> operation to be included in the <code>create</code> array, herein referred to as <a href="#anchor-file-create-entry" id="anchor-file-create-entry"><em>Anchor File Create Entries</em></a>, use the following process to compose and include a JSON object for each entry:
 <ul>
-<li>Each entry object must contain a <code>suffix_data</code> property, and its value <strong><strong>MUST</strong></strong> be a <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>.</li>
+<li>Each object must contain a <code>suffix_data</code> property, and its value <strong><strong>MUST</strong></strong> be a <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>.</li>
 </ul>
 </li>
 <li>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST NOT</strong></strong> include multiple <a href="#create">Create</a> operations that produce the same <a href="#did-suffix">DID Suffix</a>.</li>
@@ -409,13 +407,16 @@
 <li>The <em>Chunk Entry</em> object <strong><strong>MUST</strong></strong> contain a <code>chunk_file_uri</code> property, and its value <strong><strong>MUST</strong></strong> be a URI representing the corresponding CAS file entry, generated via the <a href="#cid-algorithm"><code>CID_ALGORITHM</code></a>.</li>
 </ol>
 </li>
-<li>If there are any <a href="#update">Update</a> operations to be included in the Map File, the <a href="#map-file">Map File</a> <strong><strong>MUST</strong></strong> include an <code>operations</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:</li>
+<li>If there are any <a href="#update">Update</a> operations to be included in the Map File, the <a href="#map-file">Map File</a> <strong><strong>MUST</strong></strong> include an <code>operations</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ol>
 <li>The <code>operations</code> object <strong><strong>MUST</strong></strong> include an <code>update</code> property, and its value <strong><strong>MUST</strong></strong> be an array.</li>
 <li>For each <a href="#update">Update</a> operation to be included in the <code>update</code> array, herein referred to as <a href="#map-file-update-entry" id="map-file-update-entry">Map File Update Entries</a>, use the following process to compose and include entries:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain an <code>did_suffix</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="#did-suffix">DID Suffix</a> of the DID the operation pertains to.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>signed_data</code> property, and its value <strong><strong>MUST</strong></strong> be an <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a>.</li>
 </ul>
+</li>
+</ol>
 </li>
 </ol>
 <h3 id="chunk-files"><a class="toc-anchor" href="#chunk-files">§</a> Chunk Files</h3>
@@ -526,11 +527,10 @@
 <h3 id="create"><a class="toc-anchor" href="#create">§</a> Create</h3>
 <p>Use the following process to generate a Sidetree-based DID:</p>
 <ol>
-<li>Generate a key pair via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>. The public key <strong><strong>MUST</strong></strong> be retained for use as the <a href="#initial-recovery-key" id="initial-recovery-key"><em>Initial Recovery Public Key</em></a> portion of the <a href="#did-suffix">DID Suffix</a>, while the the private key <strong><strong>MUST</strong></strong> be securely stored for use in subsequent <a href="#recovery">Recovery</a> operations.</li>
-<li>Generate and retain a <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a> for use in the next Recovery operation, herein referred to as <a href="#initial-recovery-commitment" id="initial-recovery-commitment"><em>Initial Recovery Commitment</em></a>.</li>
-<li>Generate a <em>Recovery Commitment</em> using the <a href="#hashing-process">Hashing Process</a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, to generate a hash of the <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a> (if publication of the DID is desired).</li>
+<li>Generate a recovery key pair via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <a href="#initial-recovery-key" id="initial-recovery-key"><em>Initial Recovery Public Key</em></a> for use in generating the <em>Recovery Commitment</em>, and the private key for use in the next <a href="#recovery">Recovery</a> operation.</li>
+<li>Create a <em>Recovery Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash value from the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representation of the <a href="#initial-recovery-key"><em>Initial Recovery Public Key</em></a>, and retain the hash value for inclusion in an <a href="#anchor-file">Anchor File</a> (if publication of the DID is desired).</li>
 <li>Generate and retain a <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, for use in the next Update operation, herein referred to as <em>Update Reveal Value</em>.</li>
-<li>Generate an <em>Update Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash of the <em>Update Reveal Value</em>, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a> (if publication of the DID is desired).</li>
+<li>Create an <em>Update Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash of the <em>Update Reveal Value</em>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a> (if publication of the DID is desired).</li>
 <li>Generate an encoded representation of the following object using the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, herein referred to as the <a href="#create-delta-object" id="create-delta-object"><em>Create Operation Delta Object</em></a>:<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"patches"</span><span class="token operator">:</span> <span class="token punctuation">[</span> PATCH_<span class="token number">1</span><span class="token punctuation">,</span> PATCH_<span class="token number">2</span><span class="token punctuation">,</span> ... <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"update_commitment"</span><span class="token operator">:</span> HASH_OF_UPDATE_COMMITMENT_VALUE
@@ -543,13 +543,11 @@
 </li>
 <li>Generate an encoded representation of the following object using the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, herein referred to as the <a href="#create-suffix-data-object" id="create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>:<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH<span class="token punctuation">,</span>
-  <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT<span class="token punctuation">,</span>
   <span class="token property">"recovery_commitment"</span><span class="token operator">:</span> COMMITMENT_HASH
 <span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>delta_hash</code> property, and its value <strong><strong>MUST</strong></strong> be a hash of the decoded <a href="#create-delta-object"><em>Create Operation Delta Object</em></a> (detailed above), generated via the <a href="#hashing-process">Hashing Process</a>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain the <code>recovery_key</code> property, and its value <strong><strong>MUST</strong></strong> be an <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation of the <a href="#initial-recovery-key"><em>Initial Recovery Public Key</em></a> (detailed above).</li>
 <li>The object <strong><strong>MUST</strong></strong> contain an <code>recovery_commitment</code> property, and its value <strong><strong>MUST</strong></strong> be an <a href="#initial-recovery-commitment"><em>Initial Recovery Commitment</em></a> (detailed above).</li>
 </ul>
 </li>
@@ -590,12 +588,11 @@
 <h3 id="recover"><a class="toc-anchor" href="#recover">§</a> Recover</h3>
 <p>Use the following process to recover a Sidetree-based DID:</p>
 <ol>
-<li>Retrieve the <em>Recovery Reveal Value</em> that matches the previously anchored <em>Recovery Commitment</em>. This value will be used in constructing an <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entry</em></a> for the DID being recovered.</li>
-<li>Generate and retain a <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a> for use in the next Recovery operation, herein referred to as the <em>Recovery Reveal Value</em>.</li>
-<li>Generate a <a href="#recovery-commitment" id="recovery-commitment"><em>Recovery Commitment</em></a> hash using the <a href="#hashing-process">Hashing Process</a> to generate a hash of the <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a>.</li>
+<li>Retrieve the <em>Recovery Key</em> that matches the previously anchored <em>Recovery Commitment</em>. This value will be used in constructing an <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entry</em></a> for the DID being recovered.</li>
+<li>Generate a new recovery key pair, which <strong><strong>MUST NOT</strong></strong> be the same key used in any previous operations, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <em>Next Recovery Public Key</em> for use in generating the next <em>Recovery Commitment</em>, and the private key for use in the next <a href="#recovery">Recovery</a> operation.</li>
+<li>Create a <em>Recovery Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash value from the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representation of the <em>Next Recovery Public Key</em>, and retain the hash value for inclusion in an <a href="#anchor-file">Anchor File</a>.</li>
 <li>Generate and retain a <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, for use in the next Update operation, herein referred to as the <em>Update Reveal Value</em>.</li>
 <li>Generate an <em>Update Commitment</em> using the <a href="#hashing-process">Hashing Process</a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, to generate a hash of the <em>Update Reveal Value</em>, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a>.</li>
-<li>Optionally, the recovering entity MAY generate a new key pair, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, for inclusion in the <a href="#anchor-file">Anchor File</a> (to support key rolling, etc.). The private key <strong><strong>MUST</strong></strong> be securely stored for use in subsequent <a href="#recover">Recovery</a> operations.</li>
 <li>Generate an encoded representation of the following object using the implementation’s [<code>DATA_ENCODING_SCHEME</code>], herein referred to as the <a href="#recover-delta-object" id="recover-delta-object"><em>Recovery Operation Delta Object</em></a>, composed as follows:<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"patches"</span><span class="token operator">:</span> <span class="token punctuation">[</span> PATCH_<span class="token number">1</span><span class="token punctuation">,</span> PATCH_<span class="token number">2</span><span class="token punctuation">,</span> ... <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"update_commitment"</span><span class="token operator">:</span> HASH_OF_UPDATE_COMMITMENT_VALUE
@@ -609,19 +606,17 @@
 <li>Generate an encoded representation of the following object using the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, herein referred to as the <a href="#recovery-signed-data-object" id="recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a>. The object <strong><strong>MUST</strong></strong> be a <a href="https://tools.ietf.org/html/rfc7515">IETF RFC 7515</a> compliant compact JWS object with a signature that validates against the currently active recovery key, and contains the following <code>payload</code> values:<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE<span class="token punctuation">,</span>
     <span class="token property">"recovery_commitment"</span><span class="token operator">:</span> COMMITMENT_HASH<span class="token punctuation">,</span>
-    <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH<span class="token punctuation">,</span>
-    <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT
+    <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT<span class="token punctuation">,</span>
+    <span class="token property">"delta_hash"</span><span class="token operator">:</span> DELTA_HASH
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"signature"</span><span class="token operator">:</span> SIGNATURE_STRING
 <span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> contain a <code>delta_hash</code> property, and its value <strong><strong>MUST</strong></strong> be a hash of the decoded <a href="#recover-delta-object"><em>Recovery Operation Delta Object</em></a>, generated via the <a href="#hashing-process">Hashing Process</a>.</li>
-<li>The JWS <code>payload</code> object  <strong><strong>MUST</strong></strong> contain a <code>recovery_reveal_value</code> property, and its value <strong><strong>MUST</strong></strong> be the last recovery <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>.</li>
 <li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> contain a <code>recovery_commitment</code> property, and its value <strong><strong>MUST</strong></strong> be the next <a href="#recovery-commitment"><em>Recovery Commitment</em></a>, as described above.</li>
-<li>The JWS <code>payload</code> object MAY include a <code>recovery_key</code> property, and if included, its value <strong><strong>MUST</strong></strong> be an <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation of a public key, as described above.</li>
+<li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> include a <code>recovery_key</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation matching the previous <em>Recovery Commitment</em>.</li>
 </ul>
 </li>
 </ol>
@@ -633,14 +628,14 @@
   <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"did_suffix"</span><span class="token operator">:</span> SUFFIX_STRING<span class="token punctuation">,</span>
-    <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE
+    <span class="token property">"recovery_key"</span><span class="token operator">:</span> JWK_OBJECT
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token property">"signature"</span><span class="token operator">:</span> SIGNATURE_STRING
 <span class="token punctuation">}</span>
 </code></pre>
 <ul>
 <li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> contain a <code>did_suffix</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="#did-suffix">DID Suffix</a> of the DID the operation pertains to.</li>
-<li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> contain a <code>recovery_reveal_value</code> property, and its value <strong><strong>MUST</strong></strong> be the last recovery <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>.</li>
+<li>The JWS <code>payload</code> object <strong><strong>MUST</strong></strong> contain a <code>recovery_key</code> property, and its value <strong><strong>MUST</strong></strong> match the last <em>Recovery Commitment</em>.</li>
 </ul>
 </li>
 </ol>
@@ -988,10 +983,15 @@
 <li>
 <p><a href="#operation-hash-map-construction" id="operation-hash-map-construction">Assembly of the <em>Operation Hash Map</em></a>: if no entries are present in the DID’s <em>Operation Storage</em> area without the <em>Mapped</em> flag, proceed to the next step, if entries do exist in the DID’s <em>Operation Storage</em> begin iterating them forward from 0-index as follows:</p>
 <ol>
-<li>If the entry is a Create-type operation, create a persistent <a href="#create-operation-pool" id="create-operation-pool"><em>Create Operation Pool</em></a> reference for it, and all other Create-type operations found during this iteration.</li>
-<li>Hash the <em>Reveal Value</em> of the operation.</li>
-<li>Ensure a key exists in the <em>Operation Hash Map</em> corresponding to the hash, and that the corresponding value is an array. If no property exists for the hash, create it and let its value be an array.</li>
-<li>Insert the entry into the array of the matching hash at its proper position in ascending <a href="#ledger-time"><code>Ledger Time</code></a> order.</li>
+<li>If the entry is a <a href="#create">Create</a> operation, create a persistent <a href="#create-operation-pool" id="create-operation-pool"><em>Create Operation Pool</em></a> reference for it, and all other Create-type operations found during this iteration.</li>
+<li>If the entry is not a <a href="#create">Create</a> operation, derive the <em>Map Hash</em> as follows:
+<ul>
+<li>If the entry is a <a href="#recovery">Recovery</a> or <a href="#deactivate">Deactivate</a> operation, hash the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representation value of the entry’s <code>recovery_key</code> property using the <a href="#hashing-process">Hashing Process</a> and let the resulting hash value be the <em>Map Hash</em>.</li>
+<li>If the entry is an <a href="#update">Update</a> operation, hash the value of the entry’s <code>update_reveal_value</code> property using the <a href="#hashing-process">Hashing Process</a> and let the resulting hash value be the <em>Map Hash</em>.</li>
+</ul>
+</li>
+<li>Ensure a key exists in the <em>Operation Hash Map</em> corresponding to the <em>Map Hash</em>, and that the corresponding value is an array. If no property exists for the <em>Map Hash</em>, create one and let its value be an array.</li>
+<li>Insert the entry into the array of the <em>Map Hash</em> at its proper position in ascending <a href="#ledger-time"><code>Ledger Time</code></a> order.</li>
 <li>Mark the entry in the <em>Operation Storage</em> area with the <em>Mapped</em> flag.</li>
 </ol>
 </li>
@@ -999,7 +999,6 @@
 <p><a href="#create-operation-processing" id="create-operation-processing">Create operation processing</a>: If no operations are present in the <a href="#create-operation-pool"><em>Create Operation Pool</em></a>, cease resolution of the DID and declare the DID <em>Unresolvable</em>. If the <a href="#create-operation-pool"><em>Create Operation Pool</em></a> contains operation entries, process them as follows:</p>
 <ol>
 <li>If a <em>Next Recovery Commitment</em> value has not already been stored in relation to the DID, store the value of the <code>recovery_commitment</code> property from the entry’s <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> as the <em>Next Recovery Commitment</em> for use in processing the next Recovery operation.</li>
-<li>If a <em>Next Recovery Key</em> value has not already been stored in relation to the DID, store the value of the <code>recovery_key</code> property from the entry’s <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> as the <em>Next Recovery Key</em> for use in processing the next Recovery operation.</li>
 <li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
 <ol>
 <li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> using the associated <em>Chunk File URI</em>. If the file is unable to be retrieved:
@@ -1033,17 +1032,16 @@
 </ol>
 </li>
 <li>
-<p><a href="#recovery-deactivate-operation-processing" id="recovery-operation-processing">Recovery and deactivate operation processing</a>: when Create operations have been successfully processed, process any Recovery operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
+<p><a href="#recovery-deactivate-operation-processing" id="recovery-deactivate-operation-processing">Recovery and deactivate operation processing</a>: when Create operations have been successfully processed, process any <a href="#recovery">Recovery</a> and <a href="#deactivate">Deactivate</a> operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
 <ol>
 <li>If a property is present in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, process its array of operation entries using the following steps. If no property exists in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, exit <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a> and advance to <a href="#update-operation-processing">update operation processing</a>.</li>
 <li>Iterate the array of operation entries forward from 0-index using the process enumerated below until a valid entry is found and processed:
 <ul>
 <li>
-<p>If the entry is a Recovery operation:</p>
+<p>If the entry is a <a href="#recovery">Recovery</a> operation:</p>
 <ol>
-<li>Using the key currently assigned as the <em>Next Recovery Key</em>, validate the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next operation. If there are no further operation entries, and the <em>Next Update Commitment</em> value is not set to <code>null</code>, proceed to <a href="#update-operation-processing">update operation processing</a>.</li>
-<li>Store the <code>recovery_commitment</code> value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> as the new value for the <em>Next Recovery Commitment</em>, for use in processing the next Recovery operation.</li>
-<li>If the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> includes a <code>recovery_key</code> property with a value that is an <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> compliant JWK representation of a public key, assign the key as the new value for the <em>Next Recovery Key</em> and retain it for use in processing the next Recovery operation.</li>
+<li>Use the <code>recovery_key</code> value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> to validate its JWS signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next entry. If there are no further operation entries, and the <em>Next Update Commitment</em> value <strong><strong>IS</strong></strong> set to <code>null</code>, proceed to <a href="#compiled-state-processing">compiled state processing</a>. If the <em>Next Update Commitment</em> value <strong><strong>IS NOT</strong></strong> set to <code>null</code>, proceed to <a href="#update-operation-processing">update operation processing</a>.</li>
+<li>Store the <code>recovery_commitment</code> value of the <a href="#recovery-signed-data-object"><em>Recovery Operation Signed Data Object</em></a> as the new value for the <em>Next Recovery Commitment</em>, for use in processing the next <a href="#recovery">Recovery</a> operation.</li>
 <li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (e.g. node is a <a href="#light-node"><em>Light Node</em></a> implementation), perform the following steps:
 <ol>
 <li>Using the <a href="#cas-protocol"><code>CAS_PROTOCOL</code></a>, fetch the <a href="#chunk-files">Chunk File</a> data using the associated <em>Chunk File URI</em>. If the file data is able to be retrieved, proceed, if the file cannot be found:
@@ -1082,12 +1080,11 @@
 </ol>
 </li>
 <li>
-<p>If the entry is a Deactivate operation:</p>
+<p>If the entry is a <a href="#deactivate">Deactivate</a> operation:</p>
 <ol>
-<li>Using the key currently assigned as the <em>Next Recovery Key</em>, validate the <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and proceed to the next operation. If there are no further operation entries, and the <em>Next Update Commitment</em> value is not set to <code>null</code>, proceed to <a href="#update-operation-processing">update operation processing</a>.</li>
+<li>Use the <code>recovery_key</code> value of the <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> to validate its JWS signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next entry.</li>
 <li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>did_suffix</code> property with a value that exactly equal to the <a href="#did-suffix">DID Suffix</a> of the DID being operated on, if the value is not exactly equal, skip the entry and proceed to the next operation.</li>
-<li>The <a href="#deactivate-signed-data-object"><em>Deactivate Operation Signed Data Object</em></a> <strong><strong>must</strong></strong> include a <code>recovery_reveal_value</code> property, and the hash of the value (generated using the <a href="#hashing-process">Hashing Process</a>) <strong><strong>must</strong></strong> be exactly equal to the currently value of the <em>Next Recovery Commitment</em>. If the values are exactly equal, proceed, if they are not exactly equal, skip the entry and proceed to the next operation in the array.</li>
-<li>Mark the DID as <em>Deactivated</em>, and process no further operation entries for this DID.</li>
+<li>Set the <em>Next Update Commitment</em> value to <code>null</code>, mark the DID as <em>Deactivated</em>, and process no further operation entries for this DID.</li>
 </ol>
 </li>
 </ul>
@@ -1095,7 +1092,7 @@
 </ol>
 </li>
 <li>
-<p><a href="#update-operation-processing">Update operation processing</a>: if the <em>Next Update Commitment</em> value <strong><strong>IS NOT</strong></strong> set to <code>null</code>, and no Deactivate operations were successfully processed during <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a>, process any Update operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
+<p><a href="#update-operation-processing">Update operation processing</a>: if the DID is marked as <em>Deactivated</em> or the <em>Next Update Commitment</em> value <strong><strong>IS</strong></strong> set to <code>null</code>, skip <a href="#update">Update</a> processing and proceed to <a href="#compiled-state-processing">compiled state processing</a>. If the <em>Next Update Commitment</em> value <strong><strong>IS NOT</strong></strong> set to <code>null</code> and no <a href="#deactivate">Deactivate</a> operations were successfully processed during <a href="#recovery-deactivate-operation-processing">recovery and deactivate operation processing</a>, process any Update operations that may exist in the <em>Operation Hash Map</em> using the following processing loop:</p>
 <ol>
 <li>
 <p>If a property is present in the <em>Operation Hash Map</em> that matches the <em>Next Update Commitment</em> exactly, process its array of operation entries using the following steps. If no property exists in the <em>Operation Hash Map</em> that matches the <em>Next Recovery Commitment</em> exactly, exit <a href="#update-operation-processing">update operation processing</a> and advance to <a href="#compiled-state-processing">compiled state processing</a>.</p>
@@ -1103,7 +1100,7 @@
 <li>
 <p>Iterate the array of operation entries forward from 0-index using the process enumerated below until a valid entry is found and processed:</p>
 <ol>
-<li>Using the <code>kid</code> from the operation’s <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a>, locate the key currently associated with the DID that matches the <code>kid</code> value, and ensure it is designated as a key allowed to perform operations (e.g. has an<a href="#add-public-keys"><code>add-public-keys</code></a> Patch Action <code>usage</code> designation of <code>ops</code>). If no currently associated key matches the <code>kid</code> value, or the key is not designated as a key allowed to perform operations, skip the entry, and iterate forward to the next operation.</li>
+<li>Using the <code>kid</code> from the operation’s <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a>, locate the key currently associated with the DID that matches the <code>kid</code> value, and ensure it is designated as a key allowed to perform operations (e.g. has an <a href="#add-public-keys"><code>add-public-keys</code></a> Patch Action <code>usage</code> designation of <code>ops</code>). If no currently associated key matches the <code>kid</code> value, or the key is not designated as a key allowed to perform operations, skip the entry, and iterate forward to the next operation.</li>
 <li>Using the specified key, validate the <a href="#update-signed-data-object"><em>Update Operation Signed Data Object</em></a> signature. If the signature is valid, proceed, if the signature is invalid, skip the entry and iterate forward to the next operation.</li>
 <li>Retrieve the <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> from the pre-processed <a href="#chunk-file">Chunk File</a> associated with the operation and proceed to the processing instruction, or, if the <a href="#chunk-file">Chunk File</a> has not yet been retrieved and processed (i.e. node is a <a href="#light-node"><em>Light Node</em></a> implementation, file was previously unavailable, etc.), perform the following steps:
 <ol>
