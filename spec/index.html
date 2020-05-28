@@ -82,11 +82,11 @@
 <td>JSON Document containing proving and index data for Create, Recovery, and Deactivate operations, and a CAS URI for the associated Map File. This file is anchored to the target ledger.</td>
 </tr>
 <tr>
-<td>Map File</td>
+<td><a href="#map-file">Map File</a></td>
 <td>JSON Document containing Update operation proving and index data, as well as CAS URI for Chunk File chunks.</td>
 </tr>
 <tr>
-<td>Chunk File</td>
+<td><a href="#chunk-files">Chunk File</a></td>
 <td>JSON Document containing all verbose operation data for the corresponding set of DIDs specified in the related Map File.</td>
 </tr>
 <tr>
@@ -119,7 +119,7 @@
 </tr>
 <tr>
 <td>Recovery Key</td>
-<td>Public/private key pair used to perform a Recovery or Deactivate operation. Must be encoded as JWK or Hex.</td>
+<td>Public/private key pair used to perform a Recovery or Deactivate operation. Must be encoded as JWK.</td>
 </tr>
 <tr>
 <td>Sidetree Node</td>
@@ -128,6 +128,10 @@
 <tr>
 <td>Transaction</td>
 <td>Ledger transaction that anchors a set of Sidetree operations, via a CAS URI for an associated Anchor File.</td>
+</tr>
+<tr>
+<td>Anchor String</td>
+<td>The string anchored to the ledger, composed of the CAS URI to the <a href="#anchor-file">Anchor File</a>, prefixed with the declared operation count .</td>
 </tr>
 <tr>
 <td id="ledger-time">Ledger Time</td>
@@ -167,7 +171,7 @@
 <h3 id="new-version-activation"><a class="toc-anchor" href="#new-version-activation">§</a> New Version Activation</h3>
 <p>New versions of the protocol, or modifications to parameter values by implementers, <strong><strong>MUST</strong></strong> be activated at a specified <a href="#ledger-time"><em>Ledger Time</em></a> so all nodes can remain in sync by enforcing the same ruleset and parameters beginning at the same logical starting point. All transactions that occur after the specified <a href="#ledger-time"><em>Ledger Time</em></a> will adhere to the associated version’s rules and parameters until a newer version of the protocol is defined and implemented at a future <a href="#ledger-time"><em>Ledger Time</em></a>.</p>
 <h2 id="default-parameters"><a class="toc-anchor" href="#default-parameters">§</a> Default Parameters</h2>
-<p>Each version of the protocol will define a set of protocol rules and parameters with default suggested values. The following are the parameters used by this version of the Sidetree protocol - implementers MAY choose different options than the defaults listed below:</p>
+<p>Each version of the protocol will define a set of protocol rules and parameters with default suggested values. The following are the parameters used by this version of the Sidetree protocol - implementers <strong><strong>MAY</strong></strong> choose different options than the defaults listed below:</p>
 <table>
 <thead>
 <tr>
@@ -288,7 +292,7 @@
 <img src="../diagrams/file-topology.svg" style="display: block; margin: 0 auto; padding: 2em 0; width: 100%; max-width: 620px;" />
 <h3 id="anchor-file"><a class="toc-anchor" href="#anchor-file">§</a> Anchor File</h3>
 <p>Anchor Files contain <a href="#create">Create</a>, <a href="#recover">Recover</a>, and <a href="#deactivate">Deactivate</a> operation values, as well as a CAS URI for the related Sidetree Map file (detailed below). As the name suggests, Anchor Files are anchored to the target ledger system via embedding a CAS URI in the ledger’s transactional history.</p>
-<div id="example-1" class="notice example"><a class="notice-link" href="#example-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"map_file_uri"</span><span class="token operator">:</span> CAS_URI<span class="token punctuation">,</span>
   <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"create"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -377,7 +381,7 @@
 </ol>
 <h3 id="map-file"><a class="toc-anchor" href="#map-file">§</a> Map File</h3>
 <p>The Map file in the Sidetree protocol contains Update operation proving data, as well as the CAS-linked Chunk file chunks.</p>
-<div id="example-2" class="notice example"><a class="notice-link" href="#example-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"chunks"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token property">"chunk_file_uri"</span><span class="token operator">:</span> CHUNK_HASH <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -667,7 +671,7 @@
 <h3 id="standard-patch-actions"><a class="toc-anchor" href="#standard-patch-actions">§</a> Standard Patch Actions</h3>
 <p>The following set of standard <em>Patch Actions</em> are specified to help align on a common set of <em>Patch Actions</em> that provide a predictable usage patter across Sidetree-based DID Method implementations.</p>
 <h4 id="add-public-keys"><a class="toc-anchor" href="#add-public-keys">§</a> <code>add-public-keys</code></h4>
-<div id="example-3" class="notice example"><a class="notice-link" href="#example-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-9" class="notice example"><a class="notice-link" href="#example-9">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -734,7 +738,7 @@
 </li>
 </ol>
 <h4 id="remove-public-keys"><a class="toc-anchor" href="#remove-public-keys">§</a> <code>remove-public-keys</code></h4>
-<div id="example-4" class="notice example"><a class="notice-link" href="#example-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-10" class="notice example"><a class="notice-link" href="#example-10">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"key1"</span><span class="token punctuation">,</span> <span class="token string">"key2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -746,7 +750,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>public_keys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of key IDs that correspond with keys presently associated with the DID that are to be removed. If the value is not of the correct type or includes a string value that is not associated with a key in the document, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
 </ol>
 <h4 id="add-service-endpoints"><a class="toc-anchor" href="#add-service-endpoints">§</a> <code>add-service-endpoints</code></h4>
-<div id="example-5" class="notice example"><a class="notice-link" href="#example-5">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -776,7 +780,7 @@
 </li>
 </ol>
 <h4 id="remove-service-endpoints"><a class="toc-anchor" href="#remove-service-endpoints">§</a> <code>remove-service-endpoints</code></h4>
-<div id="example-6" class="notice example"><a class="notice-link" href="#example-6">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"ids"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"sds1"</span><span class="token punctuation">,</span> <span class="token string">"sds2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -836,9 +840,9 @@
 <li>Generate a transaction for the underlying ledger</li>
 <li>Generate and include the following value, herein referred to as the <a href="#anchor-string" id="anchor-string"><em>Anchor String</em></a>, within the transaction:
 <ol>
-<li>Convert the total number of operations in the Chunk File to a 4 byte little endian string and encode it using the <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, herein referred to as the <em>Operation Count</em>.</li>
+<li>Generate a numerical string (<code>'732'</code>) that represents the total number of operations present in the <a href="#anchor-file">Anchor File</a> and <a href="#map-file">Map File</a>, herein referred to as the <em>Operation Count</em>.</li>
 <li>Using the <a href="#cid-algorithm"><code>CID_ALGORITHM</code></a>, generate a CID for the Anchor File, herein referred to as the <em>Anchor File CID</em>.</li>
-<li>Join the <em>Operation Count</em> and <em>Anchor File CID</em> with a <code>.</code> as follows:<pre class="language-js"><code class="language-js"><span class="token string">"ECcAAA"</span> <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> <span class="token string">"QmWd5PH6vyRH5kMdzZRPBnf952dbR4av3Bd7B2wBqMaAcf"</span>
+<li>Join the <em>Operation Count</em> and <em>Anchor File CID</em> with a <code>.</code> as follows:<pre class="language-js"><code class="language-js"><span class="token string">"10000"</span> <span class="token operator">+</span> <span class="token string">"."</span> <span class="token operator">+</span> <span class="token string">"QmWd5PH6vyRH5kMdzZRPBnf952dbR4av3Bd7B2wBqMaAcf"</span>
 </code></pre>
 </li>
 <li>Embed the <em>Anchor String</em> in the transaction such that it can be located and parsed by any party that traverses the history of the target ledger.</li>
@@ -1155,7 +1159,7 @@
 <li>Set the <code>didDocument</code> property of the <em>Resolution Result</em> object to the resolved DID Document generated via the <a href="#operation-compilation">Operation Compilation</a> process.</li>
 <li>The <em>Resolution Result</em> object <strong><strong>MUST</strong></strong> include a <code>methodMetadata</code> property, and its value <strong><strong>MUST</strong></strong> be an object.</li>
 <li>The <em>Resolution Result</em> <code>methodMetadata</code> object <strong><strong>MUST</strong></strong> include a <code>published</code> property with a boolean value. If the compiled DID state is flagged as <em>Unpublished</em> and/or <em>Unresolvable</em> (per the <a href="#operation-compilation">Operation Compilation</a> process), the <code>published</code> property <strong><strong>MUST</strong></strong> be set to <code>false</code>, otherwise, set the value to <code>true</code>.</li>
-<li>If the compiled DID state is flagged as <em>Non-Updatable</em> (per the <a href="#operation-compilation">Operation Compilation</a> process), the <em>Resolution Result</em> <code>methodMetadata</code> object <strong><strong>MUST</strong></strong> include a <code>non-updatable</code> property with a boolean value, and its value <strong><strong>MUST</strong></strong> be set to <code>true</code>.</li>
+<li>If any operation-capable keys are currently associated with the DID, the <em>Resolution Result</em> <code>methodMetadata</code> object <strong><strong>MUST</strong></strong> include an <code>operationKeys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of the <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representations for the operation-capable public keys.</li>
 </ol>
 <h4 id="unresolvable-dids"><a class="toc-anchor" href="#unresolvable-dids">§</a> Unresolvable DIDs</h4>
 <p>…</p>
