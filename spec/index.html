@@ -235,7 +235,7 @@
 </tr>
 <tr>
 <td id="max-anchor-file-size"><code>MAX_ANCHOR_FILE_SIZE</code></td>
-<td>Maximum compressed Anchor File size.</td>
+<td>Maximum compressed <a href="#anchor-file">Anchor File</a> size.</td>
 <td style="text-align:left">1 MB</td>
 </tr>
 <tr>
@@ -294,8 +294,9 @@
 <img src="../diagrams/file-topology.svg" style="display: block; margin: 0 auto; padding: 2em 0; width: 100%; max-width: 620px;" />
 <h3 id="anchor-file"><a class="toc-anchor" href="#anchor-file">§</a> Anchor File</h3>
 <p>Anchor Files contain <a href="#create">Create</a>, <a href="#recover">Recover</a>, and <a href="#deactivate">Deactivate</a> operation values, as well as a CAS URI for the related Sidetree Map file (detailed below). As the name suggests, Anchor Files are anchored to the target ledger system via embedding a CAS URI in the ledger’s transactional history.</p>
-<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-1" class="notice example"><a class="notice-link" href="#example-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"map_file_uri"</span><span class="token operator">:</span> CAS_URI<span class="token punctuation">,</span>
+  <span class="token property">"writer_lock_id"</span><span class="token operator">:</span> OPTIONAL_LOCKING_VALUE<span class="token punctuation">,</span>
   <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"create"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
       <span class="token punctuation">{</span>
@@ -342,6 +343,7 @@
 <p>A valid <a href="#anchor-file">Anchor File</a> is a JSON document that <strong><strong>MUST NOT</strong></strong> exceed the <a href="#max-anchor-file-size"><code>MAX_ANCHOR_FILE_SIZE</code></a>, and composed as follows:</p>
 <ol>
 <li>The <a href="#anchor-file">Anchor File</a> <strong><strong>MUST</strong></strong> contain a <a href="#map-file-property" id="map-file-property"><code>map_file_uri</code></a> property if the batch of transactions being anchored contains any Create, Recovery, or Update operations, and its value <strong><strong>MUST</strong></strong> be a <em>CAS URI</em> for the related Map File. If the batch of transactions being anchored is only comprised of Deactivate operations, the <a href="#map-file-property"><code>map_file_uri</code></a> property <strong><strong>MUST NOT</strong></strong> be present.</li>
+<li>The <a href="#anchor-file">Anchor File</a> <strong><strong>MAY</strong></strong> contain a <a href="#writer-lock-property" id="writer-lock-property"><code>writer_lock_id</code></a> if the implementation chooses to implement a value locking scheme for economically based network protection, and its value <strong><strong>MUST</strong></strong> be defined by the implementation to reflect whatever values the are required to facilitate the necessary ledger and operation-level evaluations.</li>
 <li>If the set of operations to be anchored contain any <a href="#create">Create</a>, <a href="#recovery">Recover</a>, or <a href="#deactivate">Deactivate</a> operations, the <a href="#anchor-file">Anchor File</a> <strong><strong>MUST</strong></strong> contain an <code>operations</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:
 <ul>
 <li>If there are any <a href="#create">Create</a> operations to be included in the Anchor File:
@@ -383,7 +385,7 @@
 </ol>
 <h3 id="map-file"><a class="toc-anchor" href="#map-file">§</a> Map File</h3>
 <p>The Map file in the Sidetree protocol contains Update operation proving data, as well as the CAS-linked Chunk file chunks.</p>
-<div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-2" class="notice example"><a class="notice-link" href="#example-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"chunks"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token property">"chunk_file_uri"</span><span class="token operator">:</span> CHUNK_HASH <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -463,8 +465,8 @@
 </li>
 </ol>
 <h2 id="did-uri-composition"><a class="toc-anchor" href="#did-uri-composition">§</a> DID URI Composition</h2>
-<p>DID Methods based on the Sidetree protocol all share the same identifier format. The unique identifier string is a hash of the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>, known as the <a href="#short-form-did" id="short-form-did"><em>Short-Form DID URI</em></a>, which contains values such as the initial recovery public key and patches representing the initial state of the DID Document. The unique identifier string being cryptographically bound to these values enables Sidetree DIDs to be <em>self-certifying</em>, meaning the person or entity who creates a Sidetree-based DID knows their unique identifier the time it is generated, and it is cryptographic secure for instant use (for more on the instant use capabilities of Sidetree DIDs, see <a href="#unpublished-did-resolution">Unpublished DID Resolution</a>).</p>
-<p>To generate the unique identifier string of a Sidetree DID, use the <a href="#hashing-process">Hashing Process</a> to generate a hash of the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>. The following is an example of a resulting colon (<code>:</code>) separated DID URI composed of the URI scheme (<code>did:</code>), Method identifier (<code>sidetree:</code>), and unique identifier string (<code>EiBJz4...</code>):</p>
+<p>DID Methods based on the Sidetree protocol all share the same identifier format. The unique identifier segment of a Sidetree-based DID, known as the <a href="#did-suffix">DID Suffix</a>, is derived by using the <a href="#hashing-process">Hashing Process</a> to generate a hash value from the decoded <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>. The <a href="#did-suffix">DID Suffix</a> is cryptographically bound to the initial PKI state of the DID, which means Sidetree DIDs are <em>self-certifying</em>. As a result, the person or entity who creates a Sidetree-based DID knows their unique identifier upon generation, and it is cryptographic secured for instant use (for more on the instant use capabilities of Sidetree DIDs, see <a href="#unpublished-did-resolution">Unpublished DID Resolution</a>).</p>
+<p>To generate the <a href="#short-form-did" id="short-form-did"><em>Short-Form DID URI</em></a> of a Sidetree DID, use the <a href="#hashing-process">Hashing Process</a> to generate a hash of the decoded <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>. The following is an example of a resulting colon (<code>:</code>) separated DID URI composed of the URI scheme (<code>did:</code>), Method identifier (<code>sidetree:</code>), and unique identifier string (<code>EiBJz4...</code>):</p>
 <pre class="language-css"><code class="language-css"><span class="token property">did</span><span class="token punctuation">:</span><span class="token property">sidetree</span><span class="token punctuation">:</span>EiBJz4qd3Lvof3boqBQgzhMDYXWQ_wZs67jGiAhFCiQFjw
 </code></pre>
 <h3 id="long-form-did-uris"><a class="toc-anchor" href="#long-form-did-uris">§</a> Long-Form DID URIs</h3>
@@ -673,7 +675,7 @@
 <h3 id="standard-patch-actions"><a class="toc-anchor" href="#standard-patch-actions">§</a> Standard Patch Actions</h3>
 <p>The following set of standard <em>Patch Actions</em> are specified to help align on a common set of <em>Patch Actions</em> that provide a predictable usage patter across Sidetree-based DID Method implementations.</p>
 <h4 id="add-public-keys"><a class="toc-anchor" href="#add-public-keys">§</a> <code>add-public-keys</code></h4>
-<div id="example-9" class="notice example"><a class="notice-link" href="#example-9">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-3" class="notice example"><a class="notice-link" href="#example-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -740,7 +742,7 @@
 </li>
 </ol>
 <h4 id="remove-public-keys"><a class="toc-anchor" href="#remove-public-keys">§</a> <code>remove-public-keys</code></h4>
-<div id="example-10" class="notice example"><a class="notice-link" href="#example-10">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-4" class="notice example"><a class="notice-link" href="#example-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"key1"</span><span class="token punctuation">,</span> <span class="token string">"key2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -752,7 +754,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>public_keys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of key IDs that correspond with keys presently associated with the DID that are to be removed. If the value is not of the correct type or includes a string value that is not associated with a key in the document, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
 </ol>
 <h4 id="add-service-endpoints"><a class="toc-anchor" href="#add-service-endpoints">§</a> <code>add-service-endpoints</code></h4>
-<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-5" class="notice example"><a class="notice-link" href="#example-5">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -782,7 +784,7 @@
 </li>
 </ol>
 <h4 id="remove-service-endpoints"><a class="toc-anchor" href="#remove-service-endpoints">§</a> <code>remove-service-endpoints</code></h4>
-<div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-6" class="notice example"><a class="notice-link" href="#example-6">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"ids"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"sds1"</span><span class="token punctuation">,</span> <span class="token string">"sds2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -794,7 +796,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>ids</code> property, and its value <strong><strong>MUST</strong></strong> be an array of Service Endpoint IDs that correspond with Service Endpoints presently associated with the DID that are to be removed.</li>
 </ol>
 <h4 id="replace"><a class="toc-anchor" href="#replace">§</a> <code>replace</code></h4>
-<div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -818,7 +820,7 @@
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> include an <code>action</code> property, and its value <strong><strong>MUST</strong></strong> be <code>replace</code>.</li>
 <li>The object <strong><strong>MAY</strong></strong> include a <code>public_keys</code> property, and if present, its value <strong><strong>MUST</strong></strong> be an array of public key entries that follow the same schema and requirements as the public key entries from the <a href="#add-public-keys"><code>add-public-keys</code></a> <em>Patch Action</em></li>
-<li>The object <strong><strong>MAY</strong></strong> include a <code>service_endpoint</code> property, and if present, its value <strong><strong>MUST</strong></strong> be an array of service endpoint entries that follow the same schema and requirements as the service endpoint entries from the <a href="#add-service-endpoint"><code>add-service-endpoint</code></a> <em>Patch Action</em>.</li>
+<li>The object <strong><strong>MAY</strong></strong> include a <code>service_endpoints</code> property, and if present, its value <strong><strong>MUST</strong></strong> be an array of service endpoint entries that follow the same schema and requirements as the service endpoint entries from the <a href="#add-service-endpoints"><code>add-service-endpoints</code></a> <em>Patch Action</em>.</li>
 </ol>
 <h4 id="ietf-json-patch"><a class="toc-anchor" href="#ietf-json-patch">§</a> <code>ietf-json-patch</code></h4>
 <p>The <code>ietf-json-patch</code> Patch Action describes a mechanism for modifying a DID’s state using <a href="https://tools.ietf.org/html/rfc6902">IETF JSON Patch</a>. To construct a <code>ietf-json-patch</code> <em>Patch Action</em>, compose an object as follows:</p>
