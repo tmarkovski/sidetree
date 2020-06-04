@@ -695,7 +695,7 @@
 <li>Each key being added <strong><strong>MUST</strong></strong> be represented by an entry in the <code>public_keys</code> array, and each entry must be an object composed as follows:
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> include an <code>id</code> property, and its value <strong><strong>MUST</strong></strong> be a string with no more than twenty (20) ASCII encoded characters. If the value is not of the correct type or exceeds the specified length, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
-<li>The object <strong><strong>MUST</strong></strong> include a <code>type</code> property, and its value <strong><strong>MUST</strong></strong> be the identifier type string of a registered <a href="https://w3c-ccg.github.io/ld-cryptosuite-registry/">Cryptographic Suite</a> that supports the <code>publicKeyJwk</code> representation (examples below). If the value is not a registered type, or of a type that does not support the <code>publicKeyJwk</code> representation, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.
+<li>The object <strong><strong>MUST</strong></strong> include a type property, and its value <strong><strong>SHOULD</strong></strong> be the identifier type string of a registered <a href="https://w3c-ccg.github.io/ld-cryptosuite-registry/">Cryptographic Suite</a> that supports JWK representations - for example:
 <ul>
 <li><code>EcdsaSecp256k1VerificationKey2019</code></li>
 <li><code>JwsVerificationKey2020</code></li>
