@@ -69,19 +69,19 @@
 Resolution requests consist of a DID and MAY include DID parameters.
 As detailed in <a href="#resolution">Resolution</a>, the resolution request MAY include the initial state DID parameter.</p>
 <p>The server responds with the <a href="https://w3c-ccg.github.io/did-resolution/#did-resolution-result">DID Resolution Result</a> composed of the DID Document and Method Metadata.
-Sidetree defines <code>operationPublicKeys</code>, <code>recoveryKey</code> and <code>published</code> method metadata.</p>
+Sidetree defines <code>published</code>, <code>updateCommitment</code>, and <code>recoveryCommitment</code> method metadata.</p>
 <ul>
 <li><code>published</code> is detailed in <a href="#published-property">Published Property</a>.</li>
-<li><code>operationPublicKeys</code> is an array of public key objects that include <code>ops</code> in the <code>usage</code> array. See <a href="#add-public-keys">patch action</a> for more details.</li>
-<li><code>recoveryKey</code> is the recovery public key object.</li>
+<li><code>updateCommitment</code> is the commitement for the next update operation as defined in <a href="https://identity.foundation/sidetree/spec/#commitment-value-generation">commitment value generation</a>.</li>
+<li><code>recoveryCommitment</code> is the commitement for the next recover or deactivate operation as defined in <a href="https://identity.foundation/sidetree/spec/#commitment-value-generation">commitment value generation</a>.</li>
 </ul>
 <div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/did-resolution/v1"</span><span class="token punctuation">,</span>
     <span class="token property">"didDocument"</span><span class="token operator">:</span> DID_DOCUMENT_OBJECT<span class="token punctuation">,</span>
     <span class="token property">"methodMetadata"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"operationPublicKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>OPERATION_PUBLIC_KEY_OBJECT<span class="token punctuation">,</span> ...<span class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token property">"recoveryKey"</span><span class="token operator">:</span> RECOVERY_PUBLIC_KEY_OBJECT<span class="token punctuation">,</span>
-        <span class="token property">"published"</span><span class="token operator">:</span> boolean
+        <span class="token property">"published"</span><span class="token operator">:</span> boolean<span class="token punctuation">,</span>
+        <span class="token property">"updateCommitment"</span><span class="token operator">:</span> UPDATE_COMMITMENT<span class="token punctuation">,</span>
+        <span class="token property">"recoveryCommitment"</span><span class="token operator">:</span> RECOVERY_COMMITMENT
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -148,7 +148,6 @@ Sidetree defines <code>operationPublicKeys</code>, <code>recoveryKey</code> and 
 <div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"update"</span><span class="token punctuation">,</span>
     <span class="token property">"did_suffix"</span><span class="token operator">:</span> DID_SUFFIX<span class="token punctuation">,</span>
-    <span class="token property">"update_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE<span class="token punctuation">,</span>
     <span class="token property">"delta"</span><span class="token operator">:</span> DELTA_OBJECT<span class="token punctuation">,</span>
     <span class="token property">"signed_data"</span><span class="token operator">:</span> JWS_SIGNED_VALUE
 <span class="token punctuation">}</span>
@@ -158,16 +157,14 @@ Sidetree defines <code>operationPublicKeys</code>, <code>recoveryKey</code> and 
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>type</code> property, and its value <strong><strong>MUST</strong></strong> be <code>update</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>did_suffix</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="#did-suffix">DID Suffix</a> of the DID the operation pertains to.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>update_reveal_value</code> property, and its value <strong><strong>MUST</strong></strong> be the last update <a href="#commitment-value">COMMITMENT_VALUE</a>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain an <code>delta</code> property, and its value <strong><strong>MUST</strong></strong> be a <code>Base64URL</code> encoded <a href="#update-data-object"><em>Update Operation Delta Object</em></a>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>signed_data</code> property, and its value <strong><strong>MUST</strong></strong> be a <a href="https://tools.ietf.org/html/rfc7515">IETF RFC 7515</a> compliant JWS object
-as defined in <a href="#map-file">Map File</a> for Update operations.</li>
+as defined in <a href="https://identity.foundation/sidetree/spec/#map-file">Map File</a> for Update operations.</li>
 </ol>
 <h4 id="recover"><a class="toc-anchor" href="#recover">§</a> Recover</h4>
 <div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"recover"</span><span class="token punctuation">,</span>
     <span class="token property">"did_suffix"</span><span class="token operator">:</span> DID_SUFFIX<span class="token punctuation">,</span>
-    <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE<span class="token punctuation">,</span>
     <span class="token property">"delta"</span><span class="token operator">:</span> DELTA_OBJECT<span class="token punctuation">,</span>
     <span class="token property">"signed_data"</span><span class="token operator">:</span> JWS_SIGNED_VALUE
 <span class="token punctuation">}</span>
@@ -177,16 +174,14 @@ as defined in <a href="#map-file">Map File</a> for Update operations.</li>
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>type</code> property, and its value <strong><strong>MUST</strong></strong> be <code>recover</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>did_suffix</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="#did-suffix">DID Suffix</a> of the DID the operation pertains to.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>recovery_reveal_value</code> property, and its value <strong><strong>MUST</strong></strong> be the last recovery <a href="#commitment-value">COMMITMENT_VALUE</a>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain an <code>delta</code> property, and its value <strong><strong>MUST</strong></strong> be a <code>Base64URL</code> encoded <a href="#recover-delta-object"><em>Recovery Operation Delta Object</em></a>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>signed_data</code> property, and its value <strong><strong>MUST</strong></strong> be a <a href="https://tools.ietf.org/html/rfc7515">IETF RFC 7515</a> compliant JWS object
-as defined in <a href="#anchor-file">Anchor File</a> for Recovery operations.</li>
+as defined in <a href="https://identity.foundation/sidetree/spec/#anchor-file">Anchor File</a> for Recovery operations.</li>
 </ol>
 <h4 id="deactivate"><a class="toc-anchor" href="#deactivate">§</a> Deactivate</h4>
 <div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
     <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"deactivate"</span><span class="token punctuation">,</span>
     <span class="token property">"did_suffix"</span><span class="token operator">:</span> DID_SUFFIX<span class="token punctuation">,</span>
-    <span class="token property">"recovery_reveal_value"</span><span class="token operator">:</span> REVEAL_VALUE<span class="token punctuation">,</span>
     <span class="token property">"signed_data"</span><span class="token operator">:</span> JWS_SIGNED_VALUE
 <span class="token punctuation">}</span>
 </code></pre>
@@ -195,9 +190,8 @@ as defined in <a href="#anchor-file">Anchor File</a> for Recovery operations.</l
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>type</code> property, and its value <strong><strong>MUST</strong></strong> be <code>deactivate</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>did_suffix</code> property, and its value <strong><strong>MUST</strong></strong> be the <a href="#did-suffix">DID Suffix</a> of the DID the operation pertains to.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>recovery_reveal_value</code> property, and its value <strong><strong>MUST</strong></strong> be the last recovery <a href="#commitment-value">COMMITMENT_VALUE</a>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>signed_data</code> property, and its value <strong><strong>MUST</strong></strong> be a <a href="https://tools.ietf.org/html/rfc7515">IETF RFC 7515</a> compliant JWS object
-as defined in <a href="#anchor-file">Anchor File</a> for Deactivate operations.</li>
+as defined in <a href="https://identity.foundation/sidetree/spec/#anchor-file">Anchor File</a> for Deactivate operations.</li>
 </ol>
 
               </article>    
