@@ -810,29 +810,35 @@
 <h4 id="replace"><a class="toc-anchor" href="#replace">§</a> <code>replace</code></h4>
 <div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
-  <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"key2"</span><span class="token punctuation">,</span>
-      <span class="token property">"purpose"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"auth"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"EcdsaSecp256k1VerificationKey2019"</span><span class="token punctuation">,</span>
-      <span class="token property">"jwk"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"sds3"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"SecureDataStore"</span><span class="token punctuation">,</span>
-      <span class="token property">"endpoint"</span><span class="token operator">:</span> <span class="token string">"http://hub.my-personal-server.com"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token punctuation">]</span>
+  <span class="token property">"document"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"key2"</span><span class="token punctuation">,</span>
+        <span class="token property">"purpose"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"auth"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"EcdsaSecp256k1VerificationKey2019"</span><span class="token punctuation">,</span>
+        <span class="token property">"jwk"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"sds3"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"SecureDataStore"</span><span class="token punctuation">,</span>
+        <span class="token property">"endpoint"</span><span class="token operator">:</span> <span class="token string">"http://hub.my-personal-server.com"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 </div>
 <p>The <code>replace</code> <em>Patch Action</em> acts as a total state reset that replaces a DID’s current PKI metadata state with the state provided. The <code>replace</code> <em>Patch Action</em> enables the declaration of public keys and service endpoints using the same schema formats as the <code>add-public-keys</code> and <code>add-service-endpoints</code> <em>Patch Actions</em>. To construct a <code>replace</code> patch, compose an object as follows:</p>
 <ol>
 <li>The object <strong><strong>MUST</strong></strong> include an <code>action</code> property, and its value <strong><strong>MUST</strong></strong> be <code>replace</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> include a <code>document</code> property, and its value <strong><strong>MUST</strong></strong> be an object, which may contain the following properties:
+<ul>
 <li>The object <strong><strong>MAY</strong></strong> include a <code>public_keys</code> property, and if present, its value <strong><strong>MUST</strong></strong> be an array of public key entries that follow the same schema and requirements as the public key entries from the <a href="#add-public-keys"><code>add-public-keys</code></a> <em>Patch Action</em></li>
 <li>The object <strong><strong>MAY</strong></strong> include a <code>service_endpoints</code> property, and if present, its value <strong><strong>MUST</strong></strong> be an array of service endpoint entries that follow the same schema and requirements as the service endpoint entries from the <a href="#add-service-endpoints"><code>add-service-endpoints</code></a> <em>Patch Action</em>.</li>
+</ul>
+</li>
 </ol>
 <h4 id="ietf-json-patch"><a class="toc-anchor" href="#ietf-json-patch">§</a> <code>ietf-json-patch</code></h4>
 <p>The <code>ietf-json-patch</code> Patch Action describes a mechanism for modifying a DID’s state using <a href="https://tools.ietf.org/html/rfc6902">IETF JSON Patch</a>. To construct a <code>ietf-json-patch</code> <em>Patch Action</em>, compose an object as follows:</p>
