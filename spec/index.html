@@ -306,7 +306,7 @@
 <img src="../diagrams/file-topology.svg" style="display: block; margin: 0 auto; padding: 2em 0; width: 100%; max-width: 620px;" />
 <h3 id="anchor-file"><a class="toc-anchor" href="#anchor-file">§</a> Anchor File</h3>
 <p>Anchor Files contain <a href="#create">Create</a>, <a href="#recover">Recover</a>, and <a href="#deactivate">Deactivate</a> operation values, as well as a CAS URI for the related Sidetree Map file (detailed below). As the name suggests, Anchor Files are anchored to the target ledger system via embedding a CAS URI in the ledger’s transactional history.</p>
-<div id="example-1" class="notice example"><a class="notice-link" href="#example-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"map_file_uri"</span><span class="token operator">:</span> CAS_URI<span class="token punctuation">,</span>
   <span class="token property">"writer_lock_id"</span><span class="token operator">:</span> OPTIONAL_LOCKING_VALUE<span class="token punctuation">,</span>
   <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -396,7 +396,7 @@
 </ol>
 <h3 id="map-file"><a class="toc-anchor" href="#map-file">§</a> Map File</h3>
 <p>Map Files contain <a href="#update">Update</a> operation proving data, as well as CAS URI links to <a href="#chunk-files">Chunk Files</a>.</p>
-<div id="example-2" class="notice example"><a class="notice-link" href="#example-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"chunks"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token property">"chunk_file_uri"</span><span class="token operator">:</span> CHUNK_HASH <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -482,8 +482,8 @@
 </code></pre>
 <h3 id="long-form-did-uris"><a class="toc-anchor" href="#long-form-did-uris">§</a> Long-Form DID URIs</h3>
 <p>DID URI strings may include additional values that are used in resolution and other activities. The standard way to pass these values are through <em>DID URL Parameters</em>, as defined by the <a href="https://w3c.github.io/did-core/">W3C Decentralized Identifiers</a> specification.</p>
-<p>Many DID Methods require a period of time (which may be indefinite) between the generation of a DID and the DID being anchored/propagated in the underlying ledger system, and other layers for which propagation delays may apply. Sidetree introduces the <code>-METHOD-initial-state</code> <em>DID URL Parameter</em> to enable resolution of unpropagated and unpublished DIDs. To use a Sidetree-based DID immediately after generation, the controller <strong><strong>MUST</strong></strong> include the <code>-METHOD-initial-state</code> <em>DID URL Parameter</em> in the DID URI string, with the value being a string composed of the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> and the <a href="#create-delta-object"><em>Create Operation Delta Object</em></a>, separated by a period (<code>.</code>), as follows:</p>
-<pre class="language-html"><code class="language-html">did:METHOD:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>did-suffix</span><span class="token punctuation">></span></span>?-METHOD-initial-state=<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>create-suffix-data-object</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>create-delta-object</span><span class="token punctuation">></span></span>
+<p>Many DID Methods require a period of time (which may be indefinite) between the generation of a DID and the DID being anchored/propagated in the underlying ledger system, and other layers for which propagation delays may apply. Sidetree introduces the <code>initial-state</code> <em>DID URL Parameter</em> to enable resolution of unpropagated and unpublished DIDs. To use a Sidetree-based DID immediately after generation, the controller <strong><strong>MUST</strong></strong> include the <code>initial-state</code> <em>DID URL Parameter</em> in the DID URI string, with the value being a string composed of the <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a> and the <a href="#create-delta-object"><em>Create Operation Delta Object</em></a>, separated by a period (<code>.</code>), as follows:</p>
+<pre class="language-html"><code class="language-html">did:METHOD:<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>did-suffix</span><span class="token punctuation">></span></span>?initial-state=<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>create-suffix-data-object</span><span class="token punctuation">></span></span>.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>create-delta-object</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>This <em>DID URL Parameter</em> mechanism of conveying the initial <em>self-certifying</em> state of a DID, known as the <a href="#long-form-did" id="long-form-did"><em>Long-Form DID URI</em></a> supports the following features and usage patterns:</p>
 <ul>
@@ -688,7 +688,7 @@
 <h3 id="standard-patch-actions"><a class="toc-anchor" href="#standard-patch-actions">§</a> Standard Patch Actions</h3>
 <p>The following set of standard <em>Patch Actions</em> are specified to help align on a common set of <em>Patch Actions</em> that provide a predictable usage patter across Sidetree-based DID Method implementations.</p>
 <h4 id="add-public-keys"><a class="toc-anchor" href="#add-public-keys">§</a> <code>add-public-keys</code></h4>
-<div id="example-3" class="notice example"><a class="notice-link" href="#example-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-9" class="notice example"><a class="notice-link" href="#example-9">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -754,7 +754,7 @@
 </li>
 </ol>
 <h4 id="remove-public-keys"><a class="toc-anchor" href="#remove-public-keys">§</a> <code>remove-public-keys</code></h4>
-<div id="example-4" class="notice example"><a class="notice-link" href="#example-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-10" class="notice example"><a class="notice-link" href="#example-10">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"key1"</span><span class="token punctuation">,</span> <span class="token string">"key2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -766,7 +766,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>public_keys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of key IDs that correspond with keys presently associated with the DID that are to be removed. If the value is not of the correct type or includes a string value that is not associated with a key in the document, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
 </ol>
 <h4 id="add-service-endpoints"><a class="toc-anchor" href="#add-service-endpoints">§</a> <code>add-service-endpoints</code></h4>
-<div id="example-5" class="notice example"><a class="notice-link" href="#example-5">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -796,7 +796,7 @@
 </li>
 </ol>
 <h4 id="remove-service-endpoints"><a class="toc-anchor" href="#remove-service-endpoints">§</a> <code>remove-service-endpoints</code></h4>
-<div id="example-6" class="notice example"><a class="notice-link" href="#example-6">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"ids"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"sds1"</span><span class="token punctuation">,</span> <span class="token string">"sds2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -808,7 +808,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>ids</code> property, and its value <strong><strong>MUST</strong></strong> be an array of Service Endpoint IDs that correspond with Service Endpoints presently associated with the DID that are to be removed.</li>
 </ol>
 <h4 id="replace"><a class="toc-anchor" href="#replace">§</a> <code>replace</code></h4>
-<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
   <span class="token property">"document"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -1019,10 +1019,10 @@
 <li>
 <p>If record of the DID being published has been observed, proceed to Step 3. If there is no observed record of the DID being published, skip all remaining <a href="#operation-compilation">Operation Compilation</a> steps and process the DID as follows:</p>
 <ol>
-<li>If the DID URI <strong><strong>does not</strong></strong> include a <code>-METHOD-initial-state</code> <em>DID URL Parameter</em> with a Method-specific prefix that matches the name of the implementation, abort resolution and return <em>Unresolvable</em>.</li>
-<li>If the DID URI <strong><strong>does</strong></strong> include a <code>-METHOD-initial-state</code> <em>DID URL Parameter</em> with a Method-specific prefix that matches the name of the implementation, process the DID as follows:
+<li>If the DID URI <strong><strong>does not</strong></strong> include a <code>initial-state</code> <em>DID URL Parameter</em> with a Method-specific prefix that matches the name of the implementation, abort resolution and return <em>Unresolvable</em>.</li>
+<li>If the DID URI <strong><strong>does</strong></strong> include a <code>initial-state</code> <em>DID URL Parameter</em> with a Method-specific prefix that matches the name of the implementation, process the DID as follows:
 <ol>
-<li>Split the <code>-METHOD-initial-state</code> <em>DID URL Parameter</em> string value by the period (<code>.</code>) character, and ensure the resulting array contains <strong><strong>exactly</strong></strong> two (2) members. If the resulting array contains fewer than two members, abort resolution and return <em>Unresolvable</em>.</li>
+<li>Split the <code>initial-state</code> <em>DID URL Parameter</em> string value by the period (<code>.</code>) character, and ensure the resulting array contains <strong><strong>exactly</strong></strong> two (2) members. If the resulting array contains fewer than two members, abort resolution and return <em>Unresolvable</em>.</li>
 <li>Using the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, decode the both members of the array and retain the resulting values. If the values fail to properly decode in accordance with the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, abort resolution and return <em>Unresolvable</em>.</li>
 <li>Let the decoded value at the 0 index be the DID’s <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>, and validate it as such. If the value is found to be a valid <a href="#create-suffix-data-object"><em>Create Operation Suffix Data Object</em></a>, proceed, if the value fails validation, abort resolution and return <em>Unresolvable</em>.</li>
 <li>Let the decoded value at the 0 index be the DID’s <a href="#create-delta-object"><em>Create Operation Delta Object</em></a> (which is present in a <a href="#chunk-file-delta-entry"><em>Chunk File Delta Entry</em></a> for published, anchored DIDs), and validate it as such. If the value is found to be a valid <a href="#create-delta-object"><em>Create Operation Delta Object</em></a> , proceed, if the value fails validation, abort resolution and return <em>Unresolvable</em>.</li>
