@@ -140,12 +140,16 @@
 <td>JWS formatted request sent to a <em>Sidetree Node</em> to include a <em>DID Operation</em> in a batch of operations.</td>
 </tr>
 <tr>
-<td id="public-key-commitment">Public Key Commitment</td>
-<td>The resulting <a href="#commitment">commitment</a> obtained by applying the defined <a href="#operation-commitment-scheme">commitment scheme</a> to a public key</td>
+<td id="operation-key-pair">Operation Key Pair</td>
+<td>A cryptographic key used to produce an <em>Operation Request</em> JWS. Public key representation MAY be present in the DID Document. Public key representation MUST be used to produce <em>Operation Request</em> commitment.</td>
 </tr>
 <tr>
 <td id="recovery-key-pair">Recovery Key Pair</td>
-<td>Public/private key pair used to perform a Recovery or Deactivate operation.</td>
+<td>A cryptographic key used to produce an <em>Operation Request</em> of type Recover or Deactivate. Public key representation MAY be present in the DID Document. Public key representation MUST be used to produce <em>Operation Request</em> commitment.</td>
+</tr>
+<tr>
+<td id="public-key-commitment">Public Key Commitment</td>
+<td>The resulting <a href="#commitment">commitment</a> obtained by applying the defined <a href="#operation-commitment-scheme">commitment scheme</a> to a public key</td>
 </tr>
 <tr>
 <td id="recovery-commitment">Recovery Commitment</td>
@@ -328,7 +332,7 @@
 <img src="../diagrams/file-topology.svg" style="display: block; margin: 0 auto; padding: 2em 0; width: 100%; max-width: 620px;" />
 <h3 id="anchor-file"><a class="toc-anchor" href="#anchor-file">§</a> Anchor File</h3>
 <p>Anchor Files contain <a href="#create">Create</a>, <a href="#recover">Recover</a>, and <a href="#deactivate">Deactivate</a> operation values, as well as a CAS URI for the related Sidetree Map file (detailed below). As the name suggests, Anchor Files are anchored to the target ledger system via embedding a CAS URI in the ledger’s transactional history.</p>
-<div id="example-1" class="notice example"><a class="notice-link" href="#example-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"map_file_uri"</span><span class="token operator">:</span> CAS_URI<span class="token punctuation">,</span>
   <span class="token property">"writer_lock_id"</span><span class="token operator">:</span> OPTIONAL_LOCKING_VALUE<span class="token punctuation">,</span>
   <span class="token property">"operations"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -418,7 +422,7 @@
 </ol>
 <h3 id="map-file"><a class="toc-anchor" href="#map-file">§</a> Map File</h3>
 <p>Map Files contain <a href="#update">Update</a> operation proving data, as well as CAS URI links to <a href="#chunk-files">Chunk Files</a>.</p>
-<div id="example-2" class="notice example"><a class="notice-link" href="#example-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-8" class="notice example"><a class="notice-link" href="#example-8">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"chunks"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span> <span class="token property">"chunk_file_uri"</span><span class="token operator">:</span> CHUNK_HASH <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
@@ -533,7 +537,7 @@
 <div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>It is recommended that <code>kid</code> be a DID URL. If it is not, method implementers might need to rely on additional context to uniquely identify the associated verificationMethod.</p>
 </div>
 <h3 id="verifying"><a class="toc-anchor" href="#verifying">§</a> Verifying</h3>
-<p>Regardless of which proof purpose a verificationMethod is associated with, the process of verifying a JWS linked to a DID is the same.</p>
+<p>Regardless of which verification relationship a verificationMethod is associated with, the process of verifying a JWS linked to a DID is the same.</p>
 <p>The JWS header is parsed and a <code>kid</code> is extracted.</p>
 <ol>
 <li>Iterate the verificationMethods, until a verificationMethod with <code>id</code> equal to <code>kid</code> is found.</li>
@@ -541,21 +545,24 @@
 <li>Perform <a href="https://tools.ietf.org/html/rfc7515#section-5.2">JWS Verification</a> using the JWK.</li>
 </ol>
 <h4 id="operation-verification"><a class="toc-anchor" href="#operation-verification">§</a> Operation Verification</h4>
-<p>Sidetree operations are considered valid when the JWS can be verified, and where the verificationMethod used is associated with the correct proof purpose.</p>
-<p><code>operation</code>, <code>recovery</code> are proof purposes for verifying sidetree operations which sidetree DID Methods MUST support, and which MAY be exposed externally via the DID Document or Resolver Method Meta Data.</p>
-<p>An <a href="https://identity.foundation/sidetree/spec/#update">Update Operation</a> MUST be signed by a key associated with the <code>operation</code> proof purpose.</p>
-<p>A <a href="https://identity.foundation/sidetree/spec/#recover">Recover Operation</a> MUST by signed by a key associated with the <code>recovery</code> proof purpose.</p>
-<p>A <a href="https://identity.foundation/sidetree/spec/#deactivate">Deactivate Operation</a> MUST by signed by a key associated with the <code>recovery</code> proof purpose.</p>
+<p>Sidetree operations are considered valid when the JWS can be verified, and where the verificationMethod used is associated with the correct verification relationship.</p>
+<p><code>operation</code>, <code>recovery</code> are verification relationships for verifying sidetree operations which sidetree DID Methods MUST support, and which MAY be exposed externally via the DID Document or Resolver Method Meta Data.</p>
+<p>An <a href="https://identity.foundation/sidetree/spec/#update">Update Operation</a> MUST be signed by an <a href="#operation-key-pair">Operation Key Pair</a> that is authorized for an update operation. The public key of this key pair or a commitment to the public key MAY be exposed in the DID Document or Resolver Meta Data, and MAY be associated with an <code>operation</code> verification relationship.</p>
+<p>A <a href="https://identity.foundation/sidetree/spec/#recover">Recover Operation</a> MUST by signed by <a href="#recovery-key-pair">Recovery Key Pair</a> that is authorized for a recovery operation. The public key of this key pair or a commitment to the public key MAY be exposed in the DID Document or Resolver Meta Data, and MAY be associated with a <code>recovery</code> verification relationship.</p>
+<p>A <a href="https://identity.foundation/sidetree/spec/#deactivate">Deactivate Operation</a> MUST by signed by <a href="#recovery-key-pair">Recovery Key Pair</a> that is authorized for a recovery operation. The public key of this key pair or a commitment to the public key MAY be exposed in the DID Document or Resolver Meta Data, and MAY be associated with a <code>recovery</code> verification relationship.</p>
 <p>If a verificationMethod with <code>id</code> matching the JWS <code>kid</code> is not present in the expected collection, the sidetree operation is considered not valid.</p>
 <div id="warning-2" class="notice warning"><a class="notice-link" href="#warning-2">WARNING</a><p>Operations may be verified, and yet still rejected in the resolution process.</p>
 </div>
-<p>DID Core also defines proof purposes which sidetree DID Methods MAY support.</p>
+<p>DID Core also defines verification relationships which sidetree DID Methods MAY support.</p>
 <p><code>assertionMethod</code> for use with Verifiable Credentials.
 <code>authentication</code> for use with Verifiable Presentations, and general authentication flows.
 <code>capabilityInvocation</code> and <code>capabilityDelegation</code> for use with Object Capabilities used by Secure Data Stores / Encrypted Data vaults.</p>
+<p><em>Operation Key</em> and <em>Recovery Key</em> public key representations MAY be present in any verification relationship.</p>
 <div id="warning-3" class="notice warning"><a class="notice-link" href="#warning-3">WARNING</a><p>verificationMethod objects can be embedded, or referenced by <code>id</code>.</p>
 </div>
-<div id="warning-4" class="notice warning"><a class="notice-link" href="#warning-4">WARNING</a><p>It is not recommended to reuse verificationMethods for multiple proof purposes.</p>
+<div id="warning-4" class="notice warning"><a class="notice-link" href="#warning-4">WARNING</a><p>verificationMethod <code>id</code> can be a pure fragment, such as <code>#key-0</code> or a well formed URI, such as <code>did:example:123#key-1</code>. The later is much more common, and the former may lead to interoperability issues.</p>
+</div>
+<div id="warning-5" class="notice warning"><a class="notice-link" href="#warning-5">WARNING</a><p>It is not recommended to reuse verificationMethods for multiple verification relationships.</p>
 </div>
 <h2 id="did-operations"><a class="toc-anchor" href="#did-operations">§</a> DID Operations</h2>
 <p>Sidetree-based DIDs support a variety of DID operations, all of which require the DID owner to generate specific data values and cryptographic material. The sections below describe how to perform each type of operation, and how those operations are represented in the CAS-replicated files that are anchored to the underlying ledger system.</p>
@@ -564,13 +571,13 @@
 </div>
 <p>Sidetree Methods MAY choose to expose protocol operation keys in the DID Document.</p>
 <p>Sidetree Methods MAY rely on the DID Document data model when verifying protocol operations.</p>
-<div id="warning-5" class="notice warning"><a class="notice-link" href="#warning-5">WARNING</a><p>Operations other than Create contain a compact JWS. Dereferencing of key material used to verify the JWS is a DID Method specific concern. Some methods may rely of the DID Document data model, others may rely on an internal data model. Some methods may rely on <code>kid</code> of the form <code>did:example:123#fingerprint</code>, others may not include a <code>kid</code> in the JWS, or its value may be arbitrary. Support for specific <code>alg</code> fields is also DID Method specific. Implementers are cautioned to choose support for specific <code>alg</code> values carefully.</p>
+<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>Operations other than Create contain a compact JWS. Dereferencing of key material used to verify the JWS is a DID Method specific concern. Some methods may rely of the DID Document data model, others may rely on an internal data model. Some methods may rely on <code>kid</code> of the form <code>did:example:123#fingerprint</code>, others may not include a <code>kid</code> in the JWS, or its value may be arbitrary. Support for specific <code>alg</code> fields is also DID Method specific. Implementers are cautioned to choose support for specific <code>alg</code> values carefully.</p>
 </div>
 <h3 id="create"><a class="toc-anchor" href="#create">§</a> Create</h3>
 <p>Use the following process to generate a Sidetree-based DID:</p>
 <ol>
-<li>Generate a key pair using the defined <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, let this be known as the <a href="#update-key-pair">update key pair</a>.</li>
-<li>Generate a <a href="#public-key-commitment">public key commitment</a> using the defined <a href="#public-key-commitment-scheme">public key commitment scheme</a> and public key of the generated <a href="#update-key-pair">update key pair</a>, let this resulting commitment be known as the <a href="#update-commitment">update commitment</a>.</li>
+<li>Generate a key pair using the defined <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, let this be known as the <a href="#operation-key-pair">operation key pair</a>.</li>
+<li>Generate a <a href="#public-key-commitment">public key commitment</a> using the defined <a href="#public-key-commitment-scheme">public key commitment scheme</a> and public key of the generated <a href="#operation-key-pair">operation key pair</a>, let this resulting commitment be known as the <a href="#update-commitment">update commitment</a>.</li>
 <li>Generate an encoded representation of the following object using the implementation’s <a href="#data-encoding-scheme"><code>DATA_ENCODING_SCHEME</code></a>, herein referred to as the <a href="#create-delta-object" id="create-delta-object"><em>Create Operation Delta Object</em></a>:<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"patches"</span><span class="token operator">:</span> <span class="token punctuation">[</span> PATCH_<span class="token number">1</span><span class="token punctuation">,</span> PATCH_<span class="token number">2</span><span class="token punctuation">,</span> ... <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"update_commitment"</span><span class="token operator">:</span> Update Operation Commitment
@@ -631,9 +638,9 @@
 <p>Use the following process to recover a Sidetree-based DID:</p>
 <ol>
 <li>Retrieve the <em>Recovery Key</em> that matches the previously anchored <em>Recovery Commitment</em>. This value will be used in constructing an <a href="#anchor-file-recovery-entry"><em>Anchor File Recovery Entry</em></a> for the DID being recovered.</li>
-<li>Generate a new recovery key pair, which <strong><strong>MUST NOT</strong></strong> be the same key used in any previous operations, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <em>Next Recovery Public Key</em> for use in generating the next <em>Recovery Commitment</em>, and the private key for use in the next <a href="#recover">Recovery</a> operation.</li>
+<li>Generate a new <a href="#recovery-key-pair">recovery key pair</a>, which <strong><strong>MUST NOT</strong></strong> be the same key used in any previous operations, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <em>Next Recovery Public Key</em> for use in generating the next <em>Recovery Commitment</em>, and the private key for use in the next <a href="#recover">Recovery</a> operation.</li>
 <li>Create a <em>Recovery Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash value from the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representation of the <em>Next Recovery Public Key</em>, and retain the hash value for inclusion in an <a href="#anchor-file">Anchor File</a>.</li>
-<li>Generate a new update key pair, which <strong><strong>SHOULD NOT</strong></strong> be the same key used in any previous operations, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <em>Next Update Public Key</em> for use in generating the next <em>Update Commitment</em>, and the private key for use in the next <a href="#update">Update</a> operation.</li>
+<li>Generate a new operation key pair, which <strong><strong>SHOULD NOT</strong></strong> be the same key used in any previous operations, via the <a href="#key-algorithm"><code>KEY_ALGORITHM</code></a>, retaining the <em>Next Update Public Key</em> for use in generating the next <em>Update Commitment</em>, and the private key for use in the next <a href="#update">Update</a> operation.</li>
 <li>Create an <em>Update Commitment</em> using the <a href="#hashing-process">Hashing Process</a> to generate a hash value from the <a href="https://tools.ietf.org/html/draft-rundgren-json-canonicalization-scheme-17">JCS canonicalized</a> <a href="https://tools.ietf.org/html/rfc7517">IETF RFC 7517</a> JWK representation of the <em>Next Update Public Key</em>, and retain the hash value for inclusion in the <a href="#recover-delta-object"><em>Recovery Operation Delta Object</em></a>(as described below).</li>
 <li>Generate and retain a <a href="#commitment-value"><code>COMMITMENT_VALUE</code></a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, for use in the next Update operation, herein referred to as the <em>Update Reveal Value</em>.</li>
 <li>Generate an <em>Update Commitment</em> using the <a href="#hashing-process">Hashing Process</a>, in adherence with the <a href="#commitment-value-generation">Commitment Value Generation</a> directives, to generate a hash of the <em>Update Reveal Value</em>, and retain the resulting hash value for inclusion in an <a href="#anchor-file">Anchor File</a>.</li>
@@ -710,7 +717,7 @@
 <h3 id="standard-patch-actions"><a class="toc-anchor" href="#standard-patch-actions">§</a> Standard Patch Actions</h3>
 <p>The following set of standard <em>Patch Actions</em> are specified to help align on a common set of <em>Patch Actions</em> that provide a predictable usage patter across Sidetree-based DID Method implementations.</p>
 <h4 id="add-public-keys"><a class="toc-anchor" href="#add-public-keys">§</a> <code>add-public-keys</code></h4>
-<div id="example-3" class="notice example"><a class="notice-link" href="#example-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-9" class="notice example"><a class="notice-link" href="#example-9">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -776,7 +783,7 @@
 </li>
 </ol>
 <h4 id="remove-public-keys"><a class="toc-anchor" href="#remove-public-keys">§</a> <code>remove-public-keys</code></h4>
-<div id="example-4" class="notice example"><a class="notice-link" href="#example-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-10" class="notice example"><a class="notice-link" href="#example-10">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-public-keys"</span><span class="token punctuation">,</span>
   <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"key1"</span><span class="token punctuation">,</span> <span class="token string">"key2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -788,7 +795,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>public_keys</code> property, and its value <strong><strong>MUST</strong></strong> be an array of key IDs that correspond with keys presently associated with the DID that are to be removed. If the value is not of the correct type or includes a string value that is not associated with a key in the document, the entire <em>Patch Action</em> <strong><strong>MUST</strong></strong> be discarded, without any of it being used to modify the DID’s state.</li>
 </ol>
 <h4 id="add-service-endpoints"><a class="toc-anchor" href="#add-service-endpoints">§</a> <code>add-service-endpoints</code></h4>
-<div id="example-5" class="notice example"><a class="notice-link" href="#example-5">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"add-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"service_endpoints"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -818,7 +825,7 @@
 </li>
 </ol>
 <h4 id="remove-service-endpoints"><a class="toc-anchor" href="#remove-service-endpoints">§</a> <code>remove-service-endpoints</code></h4>
-<div id="example-6" class="notice example"><a class="notice-link" href="#example-6">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-12" class="notice example"><a class="notice-link" href="#example-12">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"remove-service-endpoints"</span><span class="token punctuation">,</span>
   <span class="token property">"ids"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"sds1"</span><span class="token punctuation">,</span> <span class="token string">"sds2"</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -830,7 +837,7 @@
 <li>The object <strong><strong>MUST</strong></strong> include a <code>ids</code> property, and its value <strong><strong>MUST</strong></strong> be an array of Service Endpoint IDs that correspond with Service Endpoints presently associated with the DID that are to be removed.</li>
 </ol>
 <h4 id="replace"><a class="toc-anchor" href="#replace">§</a> <code>replace</code></h4>
-<div id="example-7" class="notice example"><a class="notice-link" href="#example-7">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"action"</span><span class="token operator">:</span> <span class="token string">"replace"</span><span class="token punctuation">,</span>
   <span class="token property">"document"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"public_keys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -900,9 +907,9 @@
 <span class="token punctuation">}</span>
 </code></pre>
 </div>
-<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>Without careful validation, use of <code>ietf-json-patch</code> may result in unrecoverable states, similar to “Deactivated”.</p>
+<div id="warning-7" class="notice warning"><a class="notice-link" href="#warning-7">WARNING</a><p>Without careful validation, use of <code>ietf-json-patch</code> may result in unrecoverable states, similar to “Deactivated”.</p>
 </div>
-<div id="warning-7" class="notice warning"><a class="notice-link" href="#warning-7">WARNING</a><p>Use of <code>ietf-json-patch</code> may harm an implmentation’s ability to perform validation on operations at ingestion time, which could impact performance negatively.</p>
+<div id="warning-8" class="notice warning"><a class="notice-link" href="#warning-8">WARNING</a><p>Use of <code>ietf-json-patch</code> may harm an implmentation’s ability to perform validation on operations at ingestion time, which could impact performance negatively.</p>
 </div>
 <h2 id="transaction-operation-processing"><a class="toc-anchor" href="#transaction-operation-processing">§</a> Transaction &amp; Operation Processing</h2>
 <h3 id="transaction-anchoring"><a class="toc-anchor" href="#transaction-anchoring">§</a> Transaction Anchoring</h3>
